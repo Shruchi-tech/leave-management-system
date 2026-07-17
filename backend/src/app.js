@@ -4,6 +4,9 @@ const cors = require("cors");
 const authRoutes = require("./routes/authRoutes");
 const departmentRoutes = require("./routes/departmentRoutes");
 const leaveTypeRoutes = require("./routes/leaveTypeRoutes");
+const employeeRoutes = require("./routes/employeeRoutes");
+const leaveBalanceRoutes = require("./routes/leaveBalanceRoutes");
+const leaveRequestRoutes = require("./routes/leaveRequestRoutes");
 
 const app = express();
 
@@ -14,7 +17,9 @@ app.use(cors());
 app.use("/api/auth", authRoutes);
 app.use("/api/departments", departmentRoutes);
 app.use("/api/leave-types", leaveTypeRoutes);
-
+app.use("/api/employees", employeeRoutes);
+app.use("/api/leave-balances", leaveBalanceRoutes);
+app.use("/api/leave-requests", leaveRequestRoutes);
 app.get("/", (req, res) => {
     res.send("Leave Management API");
 });
@@ -36,3 +41,6 @@ app.use((err, req, res, next) => {
 });
 
 module.exports = app;
+
+
+       
