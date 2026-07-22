@@ -73,7 +73,7 @@ const approveLeave = async (req, res, next) => {
 
         const leave = await leaveRequestService.approveLeave(
             req.params.id,
-            req.user.employeeId,
+            req.user.id,
             req.body.manager_comment
         );
 
@@ -93,7 +93,7 @@ const rejectLeave = async (req, res, next) => {
 
         const leave = await leaveRequestService.rejectLeave(
             req.params.id,
-            req.user.employeeId,
+            req.user.id,
             req.body.manager_comment
         );
 
