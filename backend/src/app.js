@@ -7,6 +7,7 @@ const leaveTypeRoutes = require("./routes/leaveTypeRoutes");
 const employeeRoutes = require("./routes/employeeRoutes");
 const leaveBalanceRoutes = require("./routes/leaveBalanceRoutes");
 const leaveRequestRoutes = require("./routes/leaveRequestRoutes");
+const holidayRoutes = require("./routes/holidayRoutes");
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use("/api/leave-types", leaveTypeRoutes);
 app.use("/api/employees", employeeRoutes);
 app.use("/api/leave-balances", leaveBalanceRoutes);
 app.use("/api/leave-requests", leaveRequestRoutes);
+app.use("/api/holidays",holidayRoutes);
 app.get("/", (req, res) => {
     res.send("Leave Management API");
 });
