@@ -10,11 +10,11 @@ const getAllHolidays = async () => {
     const [rows] = await pool.execute(
         `SELECT
             id,
+            title,
             holiday_date,
-            name,
             description,
-            status,
-            created_at
+            created_at,
+            updated_at
          FROM holidays
          ORDER BY holiday_date ASC`
     );
@@ -32,11 +32,11 @@ const getHolidayById = async (id) => {
     const [rows] = await pool.execute(
         `SELECT
             id,
+            title,
             holiday_date,
-            name,
             description,
-            status,
-            created_at
+            created_at,
+            updated_at
          FROM holidays
          WHERE id=?`,
         [id]
@@ -60,29 +60,23 @@ const getHolidayById = async (id) => {
 // ======================================================
 
 const createHoliday = async ({
+    title,
     holiday_date,
-    name,
     description
 }) => {
 
-    // ------------------------------------------
     // Required Fields
-    // ------------------------------------------
-
-    if (!holiday_date || !name) {
+    if (!title || !holiday_date) {
 
         throw {
             status: 400,
-            message: "Holiday date and name are required"
+            message: "Holiday title and date are required"
         };
 
     }
 
 
-    // ------------------------------------------
     // Date Validation
-    // ------------------------------------------
-
     const date = new Date(holiday_date);
 
     if (isNaN(date.getTime())) {
@@ -95,10 +89,7 @@ const createHoliday = async ({
     }
 
 
-    // ------------------------------------------
     // Check Duplicate Holiday
-    // ------------------------------------------
-
     const [existing] = await pool.execute(
         `SELECT id
          FROM holidays
@@ -116,34 +107,28 @@ const createHoliday = async ({
     }
 
 
-    // ------------------------------------------
     // Insert Holiday
-    // ------------------------------------------
-
     const [result] = await pool.execute(
         `INSERT INTO holidays
         (
+            title,
             holiday_date,
-            name,
-            description,
-            status
+            description
         )
-        VALUES (?, ?, ?, ?)`,
+        VALUES (?, ?, ?)`,
         [
+            title,
             holiday_date,
-            name,
-            description || null,
-            "active"
+            description || null
         ]
     );
 
 
     return {
         id: result.insertId,
+        title,
         holiday_date,
-        name,
-        description: description || null,
-        status: "active"
+        description: description || null
     };
 
 };
@@ -156,17 +141,13 @@ const createHoliday = async ({
 const updateHoliday = async (
     id,
     {
+        title,
         holiday_date,
-        name,
-        description,
-        status
+        description
     }
 ) => {
 
-    // ------------------------------------------
     // Check Holiday
-    // ------------------------------------------
-
     const [existing] = await pool.execute(
         `SELECT id
          FROM holidays
@@ -184,24 +165,18 @@ const updateHoliday = async (
     }
 
 
-    // ------------------------------------------
     // Required Fields
-    // ------------------------------------------
-
-    if (!holiday_date || !name) {
+    if (!title || !holiday_date) {
 
         throw {
             status: 400,
-            message: "Holiday date and name are required"
+            message: "Holiday title and date are required"
         };
 
     }
 
 
-    // ------------------------------------------
     // Date Validation
-    // ------------------------------------------
-
     const date = new Date(holiday_date);
 
     if (isNaN(date.getTime())) {
@@ -214,10 +189,7 @@ const updateHoliday = async (
     }
 
 
-    // ------------------------------------------
     // Duplicate Date Check
-    // ------------------------------------------
-
     const [duplicate] = await pool.execute(
         `SELECT id
          FROM holidays
@@ -239,23 +211,18 @@ const updateHoliday = async (
     }
 
 
-    // ------------------------------------------
     // Update Holiday
-    // ------------------------------------------
-
     await pool.execute(
         `UPDATE holidays
          SET
+            title=?,
             holiday_date=?,
-            name=?,
-            description=?,
-            status=?
+            description=?
          WHERE id=?`,
         [
+            title,
             holiday_date,
-            name,
             description || null,
-            status || "active",
             id
         ]
     );
@@ -263,10 +230,9 @@ const updateHoliday = async (
 
     return {
         id,
+        title,
         holiday_date,
-        name,
-        description: description || null,
-        status: status || "active"
+        description: description || null
     };
 
 };
@@ -278,10 +244,7 @@ const updateHoliday = async (
 
 const deleteHoliday = async (id) => {
 
-    // ------------------------------------------
     // Check Holiday
-    // ------------------------------------------
-
     const [existing] = await pool.execute(
         `SELECT id
          FROM holidays
@@ -299,13 +262,9 @@ const deleteHoliday = async (id) => {
     }
 
 
-    // ------------------------------------------
-    // Soft Delete
-    // ------------------------------------------
-
+    // Hard Delete
     await pool.execute(
-        `UPDATE holidays
-         SET status='inactive'
+        `DELETE FROM holidays
          WHERE id=?`,
         [id]
     );
@@ -313,7 +272,7 @@ const deleteHoliday = async (id) => {
 
     return {
         id,
-        status: "inactive"
+        message: "Holiday deleted successfully"
     };
 
 };

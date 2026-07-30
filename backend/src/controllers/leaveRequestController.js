@@ -127,6 +127,33 @@ const cancelLeave = async (req, res, next) => {
     }
 };
 
+// ======================================================
+// Get Team Leave Requests
+// ======================================================
+
+const getTeamLeaveRequests = async (req, res, next) => {
+
+    try {
+
+        const leaves =
+            await leaveRequestService.getTeamLeaveRequests(
+                req.user.id
+            );
+
+        res.status(200).json({
+            success: true,
+            count: leaves.length,
+            data: leaves
+        });
+
+    } catch (error) {
+
+        next(error);
+
+    }
+
+};
+
 module.exports = {
     applyLeave,
     getMyLeaves,
@@ -134,5 +161,6 @@ module.exports = {
     getLeaveById,
     approveLeave,
     rejectLeave,
-    cancelLeave
+    cancelLeave,
+    getTeamLeaveRequests
 };

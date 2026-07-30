@@ -1003,7 +1003,142 @@ const cancelLeave = async (
     }
 
 };
+// ======================================================
+// Get Team Leave Requests
+// ======================================================
 
+const getTeamLeaveRequests = async (managerUserId) => {
+
+    // ------------------------------------------
+    // Get Logged-in User
+    // ------------------------------------------
+
+    const [user] = await pool.execute(
+        `SELECT
+            id,
+            employee_id,
+            role,
+            status
+         FROM users
+         WHERE id=?
+         AND status='active'`,
+        [managerUserId]
+    );
+
+    if (user.length === 0) {
+
+        throw {
+            status: 404,
+            message: "User not found"
+        };
+
+    }
+
+    const loggedInUser = user[0];
+
+
+    // ------------------------------------------
+    // Admin can see all leave requests
+    // ------------------------------------------
+
+    if (loggedInUser.role === "admin") {
+
+        const [rows] = await pool.execute(
+            `SELECT
+                lr.id,
+                e.id AS employee_id,
+                e.employee_code,
+                e.full_name,
+                e.email,
+                d.name AS department,
+                lt.name AS leave_type,
+                lt.code AS leave_code,
+                lr.start_date,
+                lr.end_date,
+                lr.total_days,
+                lr.reason,
+                lr.status,
+                lr.manager_comment,
+                lr.approved_by,
+                lr.approved_at,
+                lr.created_at
+             FROM leave_requests lr
+
+             JOIN employees e
+                ON lr.employee_id = e.id
+
+             LEFT JOIN departments d
+                ON e.department_id = d.id
+
+             JOIN leave_types lt
+                ON lr.leave_type_id = lt.id
+
+             ORDER BY lr.created_at DESC`
+        );
+
+        return rows;
+
+    }
+
+
+    // ------------------------------------------
+    // Only Manager can see team requests
+    // ------------------------------------------
+
+    if (loggedInUser.role !== "manager") {
+
+        throw {
+            status: 403,
+            message:
+                "Only managers can view team leave requests"
+        };
+
+    }
+
+
+    // ------------------------------------------
+    // Get Team Leave Requests
+    // ------------------------------------------
+
+    const [rows] = await pool.execute(
+        `SELECT
+            lr.id,
+            e.id AS employee_id,
+            e.employee_code,
+            e.full_name,
+            e.email,
+            d.name AS department,
+            lt.name AS leave_type,
+            lt.code AS leave_code,
+            lr.start_date,
+            lr.end_date,
+            lr.total_days,
+            lr.reason,
+            lr.status,
+            lr.manager_comment,
+            lr.approved_by,
+            lr.approved_at,
+            lr.created_at
+         FROM leave_requests lr
+
+         JOIN employees e
+            ON lr.employee_id = e.id
+
+         LEFT JOIN departments d
+            ON e.department_id = d.id
+
+         JOIN leave_types lt
+            ON lr.leave_type_id = lt.id
+
+         WHERE e.reporting_manager_id = ?
+
+         ORDER BY lr.created_at DESC`,
+        [loggedInUser.employee_id]
+    );
+
+    return rows;
+
+};
 
 // ======================================================
 // Export
@@ -1016,5 +1151,6 @@ module.exports = {
     getLeaveById,
     approveLeave,
     rejectLeave,
-    cancelLeave
+    cancelLeave,
+    getTeamLeaveRequests
 };
