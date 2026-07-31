@@ -1009,97 +1009,38 @@ const cancelLeave = async (
 
 const getTeamLeaveRequests = async (managerUserId) => {
 
-    // ------------------------------------------
-    // Get Logged-in User
-    // ------------------------------------------
-
-    const [user] = await pool.execute(
-        `SELECT
-            id,
-            employee_id,
-            role,
-            status
+    // Get manager's employee_id from users table
+    const [manager] = await pool.execute(
+        `SELECT employee_id, role
          FROM users
          WHERE id=?
          AND status='active'`,
         [managerUserId]
     );
 
-    if (user.length === 0) {
-
+    if (manager.length === 0) {
         throw {
             status: 404,
-            message: "User not found"
+            message: "Manager user not found"
         };
-
     }
 
-    const loggedInUser = user[0];
-
-
-    // ------------------------------------------
     // Admin can see all leave requests
-    // ------------------------------------------
-
-    if (loggedInUser.role === "admin") {
-
-        const [rows] = await pool.execute(
-            `SELECT
-                lr.id,
-                e.id AS employee_id,
-                e.employee_code,
-                e.full_name,
-                e.email,
-                d.name AS department,
-                lt.name AS leave_type,
-                lt.code AS leave_code,
-                lr.start_date,
-                lr.end_date,
-                lr.total_days,
-                lr.reason,
-                lr.status,
-                lr.manager_comment,
-                lr.approved_by,
-                lr.approved_at,
-                lr.created_at
-             FROM leave_requests lr
-
-             JOIN employees e
-                ON lr.employee_id = e.id
-
-             LEFT JOIN departments d
-                ON e.department_id = d.id
-
-             JOIN leave_types lt
-                ON lr.leave_type_id = lt.id
-
-             ORDER BY lr.created_at DESC`
-        );
-
-        return rows;
-
+    if (manager[0].role === "admin") {
+        return await getAllLeaves();
     }
 
-
-    // ------------------------------------------
-    // Only Manager can see team requests
-    // ------------------------------------------
-
-    if (loggedInUser.role !== "manager") {
-
+    // Only manager can access team leaves
+    if (manager[0].role !== "manager") {
         throw {
             status: 403,
-            message:
-                "Only managers can view team leave requests"
+            message: "Only managers can access team leave requests"
         };
-
     }
 
+    const managerEmployeeId = manager[0].employee_id;
 
-    // ------------------------------------------
-    // Get Team Leave Requests
-    // ------------------------------------------
-
+    // Get leaves of employees reporting to this manager
     const [rows] = await pool.execute(
         `SELECT
             lr.id,
@@ -1130,14 +1071,13 @@ const getTeamLeaveRequests = async (managerUserId) => {
          JOIN leave_types lt
             ON lr.leave_type_id = lt.id
 
-         WHERE e.reporting_manager_id = ?
+         WHERE e.reporting_manager_id=?
 
          ORDER BY lr.created_at DESC`,
-        [loggedInUser.employee_id]
+        [managerEmployeeId]
     );
 
     return rows;
-
 };
 
 // ======================================================

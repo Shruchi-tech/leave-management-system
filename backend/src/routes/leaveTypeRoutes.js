@@ -13,6 +13,8 @@ router.get(
     leaveTypeController.getAllLeaveTypes
 );
 
+
+
 // Get leave type by id
 router.get(
     "/:id",

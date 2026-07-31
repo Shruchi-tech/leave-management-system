@@ -8,7 +8,8 @@ const employeeRoutes = require("./routes/employeeRoutes");
 const leaveBalanceRoutes = require("./routes/leaveBalanceRoutes");
 const leaveRequestRoutes = require("./routes/leaveRequestRoutes");
 const holidayRoutes = require("./routes/holidayRoutes");
-
+const managerDashboardRoutes =
+    require("./routes/managerDashboardRoutes");
 const app = express();
 
 app.use(express.json());
@@ -25,6 +26,10 @@ app.use("/api/holidays",holidayRoutes);
 app.get("/", (req, res) => {
     res.send("Leave Management API");
 });
+app.use(
+    "/api/manager-dashboard",
+    managerDashboardRoutes
+);
 
 // 404 Handler
 app.use((req, res) => {
