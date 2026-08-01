@@ -34,6 +34,13 @@ router.get(
     authorizeRoles("admin", "manager"),
     leaveRequestController.getAllLeaves
 );
+// Team Leave Requests
+router.get(
+    "/team",
+    authenticateToken,
+    authorizeRoles("admin", "manager"),
+    leaveRequestController.getTeamLeaveRequests
+);
 
 router.get(
     "/:id",
@@ -55,12 +62,6 @@ router.put(
     authorizeRoles("admin", "manager"),
     leaveRequestController.rejectLeave
 );
-// Team Leave Requests
-router.get(
-    "/team",
-    authenticateToken,
-    authorizeRoles("admin", "manager"),
-    leaveRequestController.getTeamLeaveRequests
-);
+
 
 module.exports = router;

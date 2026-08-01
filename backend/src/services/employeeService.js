@@ -195,19 +195,21 @@ const createEmployee = async ({
 
             await connection.execute(
                 `INSERT INTO employee_leave_balances
-                (
-                    employee_id,
-                    leave_type_id,
-                    used_days,
-                    remaining_days
-                )
-                VALUES(?,?,?,?)`,
-                [
-                    employeeId,
-                    leave.id,
-                    0,
-                    leave.total_days
-                ]
+        (
+            employee_id,
+            leave_type_id,
+            total_allocated,
+            used_days,
+            remaining_days
+        )
+        VALUES (?, ?, ?, ?, ?)`,
+        [
+            employeeId,
+            leave.id,
+            leave.total_days,
+            0,
+            leave.total_days
+        ]
             );
 
         }
