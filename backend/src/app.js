@@ -11,6 +11,7 @@ const holidayRoutes = require("./routes/holidayRoutes");
 const managerDashboardRoutes =
     require("./routes/managerDashboardRoutes");
 const reportRoutes = require("./routes/reportRoutes");
+const employeeDashboardRoutes =require("./routes/employeeDashboardRoutes");
 const app = express();
 
 app.use(express.json());
@@ -25,6 +26,7 @@ app.use("/api/leave-balances", leaveBalanceRoutes);
 app.use("/api/leave-requests", leaveRequestRoutes);
 app.use("/api/holidays",holidayRoutes);
 app.use("/api/reports", reportRoutes);
+app.use("/api/employee-dashboard", employeeDashboardRoutes);
 app.get("/", (req, res) => {
     res.send("Leave Management API");
 });
