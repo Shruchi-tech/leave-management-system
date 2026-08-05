@@ -13,6 +13,14 @@ router.get(
     leaveBalanceController.getAllLeaveBalances
 );
 
+// Get My Leave Balance
+router.get(
+    "/my",
+    authenticateToken,
+    authorizeRoles("employee"),
+    leaveBalanceController.getMyLeaveBalance
+);
+
 // Get leave balance by employee id
 router.get(
     "/:employeeId",

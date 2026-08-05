@@ -52,6 +52,35 @@ const getLeaveBalanceByEmployee = async (employeeId) => {
     return rows;
 };
 
+// ======================================================
+// Get My Leave Balance
+// ======================================================
+
+const getMyLeaveBalance = async (employeeId) => {
+
+    const [rows] = await pool.execute(
+        `
+        SELECT
+            elb.id,
+            lt.name AS leave_type,
+            lt.code,
+            elb.used_days,
+            elb.remaining_days
+        FROM employee_leave_balances elb
+
+        JOIN leave_types lt
+            ON elb.leave_type_id = lt.id
+
+        WHERE elb.employee_id=?
+
+        ORDER BY lt.name
+        `,
+        [employeeId]
+    );
+
+    return rows;
+};
+
 // Update balance
 const updateLeaveBalance = async (
     id,
@@ -100,5 +129,6 @@ const updateLeaveBalance = async (
 module.exports = {
     getAllLeaveBalances,
     getLeaveBalanceByEmployee,
+    getMyLeaveBalance,
     updateLeaveBalance
 };

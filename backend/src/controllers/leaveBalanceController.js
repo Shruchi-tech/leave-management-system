@@ -32,6 +32,32 @@ const getLeaveBalanceByEmployee = async (req, res, next) => {
     }
 };
 
+// ======================================================
+// Get My Leave Balance
+// ======================================================
+
+const getMyLeaveBalance = async (req, res, next) => {
+
+    try {
+
+        const balances =
+            await leaveBalanceService.getMyLeaveBalance(
+                req.user.employeeId
+            );
+
+        res.status(200).json({
+            success: true,
+            data: balances
+        });
+
+    } catch (error) {
+
+        next(error);
+
+    }
+
+};
+
 const updateLeaveBalance = async (req, res, next) => {
     try {
 
@@ -56,5 +82,6 @@ const updateLeaveBalance = async (req, res, next) => {
 module.exports = {
     getAllLeaveBalances,
     getLeaveBalanceByEmployee,
+    getMyLeaveBalance,
     updateLeaveBalance
 };
