@@ -3,18 +3,16 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+import AppRoutes from "./routes/AppRoutes";
+import { Toaster } from "react-hot-toast";
 
-  return (
-    <>
-      <div>
-        <h1>Leave Management system</h1>
-        <h6>Welcoe to leave Manangement system made by shruchi.</h6>
-      </div>
-      
-    </>
-  )
+function App() {
+    return (
+        <>
+            <Toaster position="top-right" />
+            <AppRoutes />
+        </>
+    );
 }
 
-export default App
+export default App;
