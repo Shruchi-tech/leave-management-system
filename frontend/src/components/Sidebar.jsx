@@ -1,29 +1,38 @@
-import { NavLink } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const Sidebar = () => {
+
     return (
+
         <aside>
-            <h2>Leave Management</h2>
+
+            <h2>
+                📖 Leave Management
+            </h2>
 
             <nav>
-                <NavLink to="/employee">
+
+                <Link to="/employee">
                     Dashboard
-                </NavLink>
+                </Link>
 
-                <NavLink to="/employee/apply-leave">
+                <Link to="/employee/apply-leave">
                     Apply Leave
-                </NavLink>
+                </Link>
 
-                <NavLink to="/employee/leaves">
+                <Link to="/employee/leaves">
                     My Leaves
-                </NavLink>
-
-                <NavLink to="/employee/holidays">
+                </Link>
+                <Link to="/employee/holidays">
                     Holidays
-                </NavLink>
+                </Link>
+
             </nav>
+
         </aside>
+
     );
+
 };
 
 export default Sidebar;

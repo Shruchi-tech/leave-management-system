@@ -9,6 +9,9 @@ import ProtectedRoute from "./ProtectedRoute";
 import EmployeeLayout from "../layouts/EmployeeLayout";
 import EmployeeDashboard from "../pages/employee/EmployeeDashboard";
 import ApplyLeave from "../pages/employee/ApplyLeave";
+import MyLeaves from "../pages/employee/MyLeaves";
+import LeaveDetails from "../pages/employee/LeaveDetails";
+import Holidays from "../pages/employee/Holidays";
 const AppRoutes = () => {
 
     return (
@@ -36,6 +39,18 @@ const AppRoutes = () => {
                                path="/employee/apply-leave"
                                element={<ApplyLeave />}
                             />
+                            <Route
+                              path="/employee/leaves"
+                              element={<MyLeaves />}
+                           />
+                           <Route
+                              path="/employee/leaves/:id"
+                              element={<LeaveDetails />}
+                            />
+                            <Route
+                                path="/employee/holidays"
+                               element={<Holidays />}
+                           />
                     </Route>
                 </Route>
 

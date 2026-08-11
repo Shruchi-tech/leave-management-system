@@ -1,26 +1,25 @@
 import api from "../api/axios";
 
 export const applyLeave = async (leaveData) => {
-    const response = await api.post(
-        "/leave-requests",
-        leaveData
-    );
-
+    const response = await api.post("/leave-requests", leaveData);
     return response.data;
 };
 
 export const getMyLeaves = async () => {
+    const response = await api.get("/leave-requests/my");
+    return response.data.data;
+};
+
+export const getLeaveById = async (id) => {
+
     const response = await api.get(
-        "/leave-requests/my"
+        `/leave-requests/${id}`
     );
 
-    return response.data;
+    return response.data.data;
 };
 
 export const cancelLeave = async (id) => {
-    const response = await api.put(
-        `/leave-requests/${id}/cancel`
-    );
-
+    const response = await api.put(`/leave-requests/${id}/cancel`);
     return response.data;
 };

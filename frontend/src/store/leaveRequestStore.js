@@ -1,103 +1,35 @@
 import { create } from "zustand";
 
 import {
-    applyLeave as applyLeaveApi,
-    getMyLeaves,
-    cancelLeave as cancelLeaveApi
+    applyLeave as applyLeaveAPI,
+    getMyLeaves as getMyLeavesAPI,
+    cancelLeave as cancelLeaveAPI,
+    getLeaveById as getLeaveByIdAPI
 } from "../services/leaveRequestService";
 
-import { getLeaveTypes } from "../services/leaveTypeService";
-
 const useLeaveRequestStore = create((set) => ({
-    leaves: [],
-    leaveTypes: [],
 
+    leaves: [],
     loading: false,
-    leaveTypesLoading: false,
     error: null,
 
-    fetchLeaveTypes: async () => {
-
-        set({
-            leaveTypesLoading: true,
-            error: null
-        });
-
-        try {
-
-            const response =
-                await getLeaveTypes();
-
-            set({
-                leaveTypes: response.data || [],
-                leaveTypesLoading: false
-            });
-
-        } catch (error) {
-
-            set({
-                error:
-                    error.response?.data?.message ||
-                    "Failed to fetch leave types",
-                leaveTypesLoading: false
-            });
-
-        }
-    },
-
-    applyLeave: async (leaveData) => {
-
-        set({
-            loading: true,
-            error: null
-        });
-
-        try {
-
-            const response =
-                await applyLeaveApi(leaveData);
-
-            set({
-                loading: false
-            });
-
-            return {
-                success: true,
-                data: response.data
-            };
-
-        } catch (error) {
-
-            const message =
-                error.response?.data?.message ||
-                "Failed to apply leave";
-
-            set({
-                loading: false,
-                error: message
-            });
-
-            return {
-                success: false,
-                message
-            };
-        }
-    },
+    // =========================
+    // Get My Leaves
+    // =========================
 
     fetchMyLeaves: async () => {
 
-        set({
-            loading: true,
-            error: null
-        });
-
         try {
 
-            const response =
-                await getMyLeaves();
+            set({
+                loading: true,
+                error: null
+            });
+
+            const leaves = await getMyLeavesAPI();
 
             set({
-                leaves: response.data || [],
+                leaves,
                 loading: false
             });
 
@@ -110,47 +42,126 @@ const useLeaveRequestStore = create((set) => ({
                     "Failed to fetch leaves"
             });
 
+            throw error;
         }
     },
 
-    cancelLeave: async (id) => {
 
-        set({
-            loading: true,
-            error: null
-        });
+    // =========================
+    // Apply Leave
+    // =========================
+
+    applyLeave: async (leaveData) => {
 
         try {
 
+            set({
+                loading: true,
+                error: null
+            });
+
             const response =
-                await cancelLeaveApi(id);
+                await applyLeaveAPI(leaveData);
 
             set({
                 loading: false
             });
 
-            return {
-                success: true,
-                data: response.data
-            };
+            return response;
 
         } catch (error) {
 
-            const message =
-                error.response?.data?.message ||
-                "Failed to cancel leave";
+            set({
+                loading: false,
+                error:
+                    error.response?.data?.message ||
+                    "Failed to apply leave"
+            });
+
+            throw error;
+        }
+    },
+
+
+    // =========================
+    // Cancel Leave
+    // =========================
+
+    cancelLeave: async (id) => {
+
+        try {
+
+            set({
+                loading: true,
+                error: null
+            });
+
+            const response =
+                await cancelLeaveAPI(id);
+
+            // Update local state immediately
+            set((state) => ({
+                leaves: state.leaves.map((leave) =>
+                    leave.id === id
+                        ? {
+                            ...leave,
+                            status: "cancelled"
+                        }
+                        : leave
+                ),
+                loading: false
+            }));
+
+            return response;
+
+        } catch (error) {
 
             set({
                 loading: false,
-                error: message
+                error:
+                    error.response?.data?.message ||
+                    "Failed to cancel leave"
             });
 
-            return {
-                success: false,
-                message
-            };
+            throw error;
         }
+    },
+
+        // =========================
+    // Get Leave By ID
+    // =========================
+
+    getLeaveById: async (id) => {
+
+        try {
+
+           set({
+               loading: true,
+               error: null
+           });
+
+           const leave =
+            await getLeaveByIdAPI(id);
+
+           set({
+               loading: false
+           });
+
+            return leave;
+
+       } catch (error) {
+
+            set({
+               loading: false,
+                error:
+                   error.response?.data?.message ||
+                   "Failed to fetch leave details"
+           });
+
+           throw error;
+         }
     }
+
 }));
 
 export default useLeaveRequestStore;

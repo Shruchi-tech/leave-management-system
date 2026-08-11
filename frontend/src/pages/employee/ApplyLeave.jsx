@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 
+import { getLeaveTypes } from "../../services/leaveTypeService";
 import useLeaveRequestStore
     from "../../store/leaveRequestStore";
 
@@ -10,12 +11,11 @@ const ApplyLeave = () => {
     const navigate = useNavigate();
 
     const {
-        leaveTypes,
-        leaveTypesLoading,
-        loading,
-        fetchLeaveTypes,
-        applyLeave
+        applyLeave,
+        loading
     } = useLeaveRequestStore();
+
+    const [leaveTypes, setLeaveTypes] = useState([]);
 
     const [formData, setFormData] = useState({
         leave_type_id: "",
@@ -24,12 +24,40 @@ const ApplyLeave = () => {
         reason: ""
     });
 
+
+    // =========================
+    // Fetch Leave Types
+    // =========================
+
     useEffect(() => {
+
+        const fetchLeaveTypes = async () => {
+
+            try {
+
+                const data = await getLeaveTypes();
+
+                setLeaveTypes(data);
+
+            } catch (error) {
+
+                toast.error(
+                    error.response?.data?.message ||
+                    "Failed to load leave types"
+                );
+
+            }
+
+        };
 
         fetchLeaveTypes();
 
-    }, [fetchLeaveTypes]);
+    }, []);
 
+
+    // =========================
+    // Handle Change
+    // =========================
 
     const handleChange = (e) => {
 
@@ -43,49 +71,30 @@ const ApplyLeave = () => {
     };
 
 
+    // =========================
+    // Submit
+    // =========================
+
     const handleSubmit = async (e) => {
 
         e.preventDefault();
 
-        if (!formData.leave_type_id) {
-            toast.error("Please select leave type");
-            return;
-        }
+        if (
+            !formData.leave_type_id ||
+            !formData.start_date ||
+            !formData.end_date
+        ) {
 
-        if (!formData.start_date) {
-            toast.error("Please select start date");
-            return;
-        }
-
-        if (!formData.end_date) {
-            toast.error("Please select end date");
-            return;
-        }
-
-        if (formData.start_date > formData.end_date) {
             toast.error(
-                "Start date cannot be after end date"
+                "Leave type and dates are required"
             );
+
             return;
         }
 
+        try {
 
-        const result = await applyLeave({
-            leave_type_id:
-                Number(formData.leave_type_id),
-
-            start_date:
-                formData.start_date,
-
-            end_date:
-                formData.end_date,
-
-            reason:
-                formData.reason.trim() || null
-        });
-
-
-        if (result.success) {
+            await applyLeave(formData);
 
             toast.success(
                 "Leave applied successfully"
@@ -98,11 +107,14 @@ const ApplyLeave = () => {
                 reason: ""
             });
 
-            navigate("/employee/dashboard");
+            navigate("/employee/leaves");
 
-        } else {
+        } catch (error) {
 
-            toast.error(result.message);
+            toast.error(
+                error.response?.data?.message ||
+                "Failed to apply leave"
+            );
 
         }
 
@@ -110,6 +122,7 @@ const ApplyLeave = () => {
 
 
     return (
+
         <div>
 
             <h1>Apply Leave</h1>
@@ -126,20 +139,19 @@ const ApplyLeave = () => {
                         name="leave_type_id"
                         value={formData.leave_type_id}
                         onChange={handleChange}
-                        disabled={leaveTypesLoading}
                     >
 
                         <option value="">
                             Select Leave Type
                         </option>
 
-                        {leaveTypes.map((type) => (
+                        {leaveTypes.map((leave) => (
 
                             <option
-                                key={type.id}
-                                value={type.id}
+                                key={leave.id}
+                                value={leave.id}
                             >
-                                {type.name}
+                                {leave.name}
                             </option>
 
                         ))}
@@ -191,8 +203,7 @@ const ApplyLeave = () => {
                         name="reason"
                         value={formData.reason}
                         onChange={handleChange}
-                        placeholder="Enter reason for leave"
-                        rows="4"
+                        placeholder="Enter reason"
                     />
 
                 </div>
@@ -210,7 +221,9 @@ const ApplyLeave = () => {
             </form>
 
         </div>
+
     );
+
 };
 
 export default ApplyLeave;
