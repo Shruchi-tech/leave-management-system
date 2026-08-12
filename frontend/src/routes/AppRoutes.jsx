@@ -12,6 +12,7 @@ import ApplyLeave from "../pages/employee/ApplyLeave";
 import MyLeaves from "../pages/employee/MyLeaves";
 import LeaveDetails from "../pages/employee/LeaveDetails";
 import Holidays from "../pages/employee/Holidays";
+import ManagerDashboard from "../pages/manager/ManagerDashboard";
 const AppRoutes = () => {
 
     return (
@@ -57,10 +58,12 @@ const AppRoutes = () => {
                 <Route element={
                     <ProtectedRoute allowedRoles={["manager"]} />
                 }>
-                    <Route
-                        path="/manager"
-                        element={<h1>Manager Dashboard</h1>}
-                    />
+                    <Route element={<ManagerLayout />}>
+                         <Route
+                              path="/manager"
+                              element={<ManagerDashboard />}
+                           />
+                        </Route>
                 </Route>
 
                 <Route element={
