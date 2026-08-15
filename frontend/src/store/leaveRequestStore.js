@@ -4,8 +4,12 @@ import {
     applyLeave as applyLeaveAPI,
     getMyLeaves as getMyLeavesAPI,
     cancelLeave as cancelLeaveAPI,
-    getLeaveById as getLeaveByIdAPI
+    getLeaveById as getLeaveByIdAPI,
+    getAllLeaves as getAllLeavesAPI,
+    approveLeave as approveLeaveAPI,
+    rejectLeave as rejectLeaveAPI
 } from "../services/leaveRequestService";
+
 
 const useLeaveRequestStore = create((set) => ({
 
@@ -13,9 +17,10 @@ const useLeaveRequestStore = create((set) => ({
     loading: false,
     error: null,
 
-    // =========================
-    // Get My Leaves
-    // =========================
+
+    // ======================================================
+    // Employee - Get My Leaves
+    // ======================================================
 
     fetchMyLeaves: async () => {
 
@@ -26,7 +31,8 @@ const useLeaveRequestStore = create((set) => ({
                 error: null
             });
 
-            const leaves = await getMyLeavesAPI();
+            const leaves =
+                await getMyLeavesAPI();
 
             set({
                 leaves,
@@ -47,9 +53,9 @@ const useLeaveRequestStore = create((set) => ({
     },
 
 
-    // =========================
-    // Apply Leave
-    // =========================
+    // ======================================================
+    // Employee - Apply Leave
+    // ======================================================
 
     applyLeave: async (leaveData) => {
 
@@ -83,9 +89,9 @@ const useLeaveRequestStore = create((set) => ({
     },
 
 
-    // =========================
-    // Cancel Leave
-    // =========================
+    // ======================================================
+    // Employee - Cancel Leave
+    // ======================================================
 
     cancelLeave: async (id) => {
 
@@ -99,69 +105,254 @@ const useLeaveRequestStore = create((set) => ({
             const response =
                 await cancelLeaveAPI(id);
 
+
             // Update local state immediately
+
             set((state) => ({
-                leaves: state.leaves.map((leave) =>
-                    leave.id === id
-                        ? {
-                            ...leave,
-                            status: "cancelled"
-                        }
-                        : leave
-                ),
+
+                leaves:
+                    state.leaves.map((leave) =>
+
+                        leave.id === id
+                            ? {
+                                ...leave,
+                                status: "cancelled"
+                            }
+                            : leave
+
+                    ),
+
                 loading: false
+
             }));
+
 
             return response;
 
         } catch (error) {
 
             set({
+
                 loading: false,
+
                 error:
                     error.response?.data?.message ||
                     "Failed to cancel leave"
+
             });
 
             throw error;
         }
     },
 
-        // =========================
+
+    // ======================================================
     // Get Leave By ID
-    // =========================
+    // ======================================================
 
     getLeaveById: async (id) => {
 
         try {
 
-           set({
-               loading: true,
-               error: null
-           });
+            set({
+                loading: true,
+                error: null
+            });
 
-           const leave =
-            await getLeaveByIdAPI(id);
+            const leave =
+                await getLeaveByIdAPI(id);
 
-           set({
-               loading: false
-           });
+            set({
+                loading: false
+            });
 
             return leave;
 
-       } catch (error) {
+        } catch (error) {
 
             set({
-               loading: false,
-                error:
-                   error.response?.data?.message ||
-                   "Failed to fetch leave details"
-           });
 
-           throw error;
-         }
+                loading: false,
+
+                error:
+                    error.response?.data?.message ||
+                    "Failed to fetch leave details"
+
+            });
+
+            throw error;
+        }
+    },
+
+
+    // ======================================================
+    // Admin / Manager - Get All Leaves
+    // ======================================================
+
+    fetchAllLeaves: async () => {
+
+        try {
+
+            set({
+                loading: true,
+                error: null
+            });
+
+            const leaves =
+                await getAllLeavesAPI();
+
+            set({
+                leaves,
+                loading: false
+            });
+
+        } catch (error) {
+
+            set({
+
+                loading: false,
+
+                error:
+                    error.response?.data?.message ||
+                    "Failed to fetch leave requests"
+
+            });
+
+            throw error;
+        }
+    },
+
+
+    // ======================================================
+    // Admin / Manager - Approve Leave
+    // ======================================================
+
+    approveLeave: async (
+        id,
+        managerComment = ""
+    ) => {
+
+        try {
+
+            set({
+                loading: true,
+                error: null
+            });
+
+            const response =
+                await approveLeaveAPI(
+                    id,
+                    managerComment
+                );
+
+
+            // Update local leave status
+
+            set((state) => ({
+
+                leaves:
+                    state.leaves.map((leave) =>
+
+                        leave.id === id
+                            ? {
+                                ...leave,
+                                status: "approved",
+                                manager_comment:
+                                    managerComment
+                            }
+                            : leave
+
+                    ),
+
+                loading: false
+
+            }));
+
+
+            return response;
+
+        } catch (error) {
+
+            set({
+
+                loading: false,
+
+                error:
+                    error.response?.data?.message ||
+                    "Failed to approve leave"
+
+            });
+
+            throw error;
+        }
+    },
+
+
+    // ======================================================
+    // Admin / Manager - Reject Leave
+    // ======================================================
+
+    rejectLeave: async (
+        id,
+        managerComment = ""
+    ) => {
+
+        try {
+
+            set({
+                loading: true,
+                error: null
+            });
+
+            const response =
+                await rejectLeaveAPI(
+                    id,
+                    managerComment
+                );
+
+
+            // Update local leave status
+
+            set((state) => ({
+
+                leaves:
+                    state.leaves.map((leave) =>
+
+                        leave.id === id
+                            ? {
+                                ...leave,
+                                status: "rejected",
+                                manager_comment:
+                                    managerComment
+                            }
+                            : leave
+
+                    ),
+
+                loading: false
+
+            }));
+
+
+            return response;
+
+        } catch (error) {
+
+            set({
+
+                loading: false,
+
+                error:
+                    error.response?.data?.message ||
+                    "Failed to reject leave"
+
+            });
+
+            throw error;
+        }
     }
 
 }));
+
 
 export default useLeaveRequestStore;

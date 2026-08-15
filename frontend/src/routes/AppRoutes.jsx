@@ -6,13 +6,24 @@ import {
 
 import Login from "../pages/auth/Login";
 import ProtectedRoute from "./ProtectedRoute";
+// Employee
 import EmployeeLayout from "../layouts/EmployeeLayout";
 import EmployeeDashboard from "../pages/employee/EmployeeDashboard";
 import ApplyLeave from "../pages/employee/ApplyLeave";
 import MyLeaves from "../pages/employee/MyLeaves";
 import LeaveDetails from "../pages/employee/LeaveDetails";
 import Holidays from "../pages/employee/Holidays";
+// Manager
 import ManagerDashboard from "../pages/manager/ManagerDashboard";
+import ManagerLayout from "../layouts/ManagerLayout";
+import TeamLeaves from "../pages/manager/TeamLeaves";
+// Admin
+import AdminDashboard from "../pages/admin/AdminDashboard";
+import AdminLayout from "../layouts/AdminLayout";
+import AdminEmployees from "../pages/admin/Employees";
+import AdminHolidays from "../pages/admin/Holidays";
+import AdminLeaveRequests from "../pages/admin/AdminLeaveRequests";
+import AdminLeaveTypes from "../pages/admin/AdminLeaveTypes";
 const AppRoutes = () => {
 
     return (
@@ -63,16 +74,41 @@ const AppRoutes = () => {
                               path="/manager"
                               element={<ManagerDashboard />}
                            />
+                           <Route
+                              path="/manager/leaves"
+                              element={<TeamLeaves />}
+                           />
                         </Route>
                 </Route>
 
                 <Route element={
                     <ProtectedRoute allowedRoles={["admin"]} />
                 }>
-                    <Route
-                        path="/admin"
-                        element={<h1>Admin Dashboard</h1>}
-                    />
+                    <Route element={<AdminLayout />}>
+                         <Route
+                              path="/admin"
+                               element={<AdminDashboard />}
+                           />
+                            <Route
+                               path="/admin/employees"
+                               element={<AdminEmployees />}
+                           />
+
+                       <Route
+                        path="/admin/leaves"
+                           element={<AdminLeaveRequests />}
+                       />
+
+                      <Route
+                           path="/admin/holidays"
+                           element={<AdminHolidays />}
+                       />
+
+                       <Route
+                          path="/admin/leave-types"
+                          element={<AdminLeaveTypes />}
+                       />
+                    </Route>
                 </Route>
 
                 <Route
