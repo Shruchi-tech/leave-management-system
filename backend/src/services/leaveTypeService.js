@@ -24,7 +24,12 @@ const getLeaveTypeById = async (id) => {
     return rows[0];
 };
 
-const createLeaveType = async ({ name, code, total_days, description }) => {
+const createLeaveType = async ({
+    name,
+    code,
+    total_days,
+    description
+}) => {
 
     if (!name || !code || !total_days) {
         throw {
@@ -45,12 +50,43 @@ const createLeaveType = async ({ name, code, total_days, description }) => {
         };
     }
 
+    // Create Leave Type
     const [result] = await pool.execute(
         `INSERT INTO leave_types
-        (name,code,total_days,description,status)
-        VALUES(?,?,?,?, 'active')`,
-        [name, code, total_days, description]
+        (name, code, total_days, description, status)
+        VALUES (?, ?, ?, ?, 'active')`,
+        [
+            name,
+            code,
+            total_days,
+            description
+        ]
     );
+
+    // Create balance for all active employees
+    await pool.execute(
+    `INSERT INTO employee_leave_balances
+    (
+        employee_id,
+        leave_type_id,
+        total_allocated,
+        used_days,
+        remaining_days
+    )
+    SELECT
+        id,
+        ?,
+        ?,
+        0,
+        ?
+    FROM employees
+    WHERE status='active'`,
+    [
+        result.insertId,
+        total_days,
+        total_days
+    ]
+);
 
     return {
         id: result.insertId,
