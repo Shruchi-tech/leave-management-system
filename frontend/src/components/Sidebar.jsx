@@ -1,41 +1,100 @@
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import "../styles/Sidebar.css";
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, setIsOpen }) => {
+
+    const handleLinkClick = () => {
+        setIsOpen(false);
+    };
 
     return (
+        <>
+            {/* Mobile overlay */}
+            {isOpen && (
+                <div
+                    className="sidebar-overlay"
+                    onClick={() => setIsOpen(false)}
+                ></div>
+            )}
 
-        <aside>
+            <aside className={`sidebar ${isOpen ? "sidebar-open" : ""}`}>
 
-            <h2>
-                📖 Leave Management
-            </h2>
+                <div className="sidebar-header">
 
-            <nav>
+                    <h2>📖 Leave Management</h2>
 
-                <Link to="/employee">
-                    Dashboard
-                </Link>
+                    <p>Employee Portal</p>
 
-                <Link to="/employee/apply-leave">
-                    Apply Leave
-                </Link>
+                </div>
 
-                <Link to="/employee/leaves">
-                    My Leaves
-                </Link>
-                <Link to="/employee/holidays">
-                    Holidays
-                </Link>
-                <Link to="/employee/change-password">
-                    Change Password
-                </Link>
+                <nav className="sidebar-nav">
 
-            </nav>
+                    <NavLink
+                        to="/employee"
+                        end
+                        onClick={handleLinkClick}
+                        className={({ isActive }) =>
+                            isActive
+                                ? "sidebar-link active"
+                                : "sidebar-link"
+                        }
+                    >
+                        🏠 Dashboard
+                    </NavLink>
 
-        </aside>
+                    <NavLink
+                        to="/employee/apply-leave"
+                        onClick={handleLinkClick}
+                        className={({ isActive }) =>
+                            isActive
+                                ? "sidebar-link active"
+                                : "sidebar-link"
+                        }
+                    >
+                        📝 Apply Leave
+                    </NavLink>
 
+                    <NavLink
+                        to="/employee/leaves"
+                        onClick={handleLinkClick}
+                        className={({ isActive }) =>
+                            isActive
+                                ? "sidebar-link active"
+                                : "sidebar-link"
+                        }
+                    >
+                        📋 My Leaves
+                    </NavLink>
+
+                    <NavLink
+                        to="/employee/holidays"
+                        onClick={handleLinkClick}
+                        className={({ isActive }) =>
+                            isActive
+                                ? "sidebar-link active"
+                                : "sidebar-link"
+                        }
+                    >
+                        🗓️ Holidays
+                    </NavLink>
+
+                    <NavLink
+                        to="/employee/change-password"
+                        onClick={handleLinkClick}
+                        className={({ isActive }) =>
+                            isActive
+                                ? "sidebar-link active"
+                                : "sidebar-link"
+                        }
+                    >
+                        🔐 Change Password
+                    </NavLink>
+
+                </nav>
+
+            </aside>
+        </>
     );
-
 };
 
 export default Sidebar;

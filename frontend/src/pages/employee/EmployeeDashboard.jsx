@@ -1,8 +1,11 @@
 import { useEffect } from "react";
-import toast from "react-hot-toast";
 
 import useEmployeeDashboardStore
     from "../../store/employeeDashboardStore";
+
+import HolidayChart from "../../components/HolidayChart";
+
+import "../../styles/EmployeeDashboard.css";
 
 const EmployeeDashboard = () => {
 
@@ -38,146 +41,310 @@ const EmployeeDashboard = () => {
     } = dashboard;
 
     return (
-        <div>
+        <div className="dashboard">
 
-            {/* Employee Information */}
+            {/* ================= HEADER ================= */}
 
-            <h1>
-                Welcome, {employee.full_name}
-            </h1>
-
-            <p>
-                {employee.designation} | {employee.department}
-            </p>
-
-            <p>
-                Employee Code: {employee.employee_code}
-            </p>
-
-
-            {/* Leave Statistics */}
-
-            <h2>Leave Statistics</h2>
-
-            <div>
-                <div>
-                    <h3>Total Requests</h3>
-                    <p>{leaveStats.totalRequests}</p>
-                </div>
+            <div className="dashboard-header">
 
                 <div>
-                    <h3>Pending</h3>
-                    <p>{leaveStats.pending}</p>
+                    <h1>
+                        Welcome back, {employee.full_name}! 👋
+                    </h1>
+
+                    <p>
+                        {employee.designation}
+                        <span> • </span>
+                        {employee.department}
+                    </p>
                 </div>
 
-                <div>
-                    <h3>Approved</h3>
-                    <p>{leaveStats.approved}</p>
+                <div className="dashboard-date">
+                    📅 {new Date().toLocaleDateString("en-IN", {
+                        weekday: "long",
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric"
+                    })}
                 </div>
 
-                <div>
-                    <h3>Rejected</h3>
-                    <p>{leaveStats.rejected}</p>
-                </div>
-
-                <div>
-                    <h3>Cancelled</h3>
-                    <p>{leaveStats.cancelled}</p>
-                </div>
             </div>
 
 
-            {/* Leave Balance */}
+            {/* ================= STATISTICS ================= */}
 
-            <h2>Leave Balance</h2>
+            <div className="stats-grid">
 
-            <div>
-                {leaveBalance.map((leave) => (
-                    <div key={leave.code}>
-
-                        <h3>{leave.leave_type}</h3>
-
-                        <p>
-                            Total: {leave.total_allocated}
-                        </p>
-
-                        <p>
-                            Used: {leave.used_days}
-                        </p>
-
-                        <p>
-                            Remaining: {leave.remaining_days}
-                        </p>
-
+                <div className="stat-card">
+                    <div className="stat-icon blue">📄</div>
+                    <div>
+                        <span>Total Requests</span>
+                        <strong>{leaveStats.totalRequests}</strong>
+                        <small>All time</small>
                     </div>
-                ))}
+                </div>
+
+                <div className="stat-card">
+                    <div className="stat-icon orange">🕐</div>
+                    <div>
+                        <span>Pending</span>
+                        <strong>{leaveStats.pending}</strong>
+                        <small>Awaiting approval</small>
+                    </div>
+                </div>
+
+                <div className="stat-card">
+                    <div className="stat-icon green">✓</div>
+                    <div>
+                        <span>Approved</span>
+                        <strong>{leaveStats.approved}</strong>
+                        <small>Approved leaves</small>
+                    </div>
+                </div>
+
+                <div className="stat-card">
+                    <div className="stat-icon red">✕</div>
+                    <div>
+                        <span>Rejected</span>
+                        <strong>{leaveStats.rejected}</strong>
+                        <small>Rejected leaves</small>
+                    </div>
+                </div>
+
+                <div className="stat-card">
+                    <div className="stat-icon gray">⊗</div>
+                    <div>
+                        <span>Cancelled</span>
+                        <strong>{leaveStats.cancelled}</strong>
+                        <small>Cancelled leaves</small>
+                    </div>
+                </div>
+
             </div>
 
 
-            {/* Upcoming Leaves */}
+            {/* ================= BALANCE + CHART ================= */}
 
-            <h2>Upcoming Leaves</h2>
+            <div className="dashboard-middle">
 
-            {upcomingLeaves.length === 0 ? (
-                <p>No upcoming leaves</p>
-            ) : (
-                upcomingLeaves.map((leave) => (
-                    <div key={leave.id}>
+                {/* Leave Balance */}
 
-                        <h3>{leave.leave_type}</h3>
+                <div className="dashboard-section balance-section">
 
-                        <p>
-                            {new Date(
-                                leave.start_date
-                            ).toLocaleDateString()}
-                            {" - "}
-                            {new Date(
-                                leave.end_date
-                            ).toLocaleDateString()}
-                        </p>
+                    <h2>📅 Leave Balance</h2>
 
-                        <p>
-                            {leave.total_days} days
-                        </p>
+                    <div className="balance-grid">
+
+                        {leaveBalance.map((leave) => {
+
+                            const percentage =
+                                leave.total_allocated > 0
+                                    ? (leave.remaining_days /
+                                        leave.total_allocated) * 100
+                                    : 0;
+
+                            return (
+                                <div
+                                    className="balance-card"
+                                    key={leave.code}
+                                >
+
+                                    <h3>
+                                        {leave.leave_type}
+                                    </h3>
+
+                                    <strong>
+                                        {leave.remaining_days}
+                                    </strong>
+
+                                    <p>Remaining</p>
+
+                                    <div className="balance-info">
+                                        <span>
+                                            Total
+                                            <b>
+                                                {leave.total_allocated}
+                                            </b>
+                                        </span>
+
+                                        <span>
+                                            Used
+                                            <b>
+                                                {leave.used_days}
+                                            </b>
+                                        </span>
+                                    </div>
+
+                                    <div className="progress-bar">
+                                        <div
+                                            style={{
+                                                width: `${percentage}%`
+                                            }}
+                                        />
+                                    </div>
+
+                                </div>
+                            );
+                        })}
 
                     </div>
-                ))
-            )}
+
+                </div>
 
 
-            {/* Recent Leaves */}
+                {/* Holiday Chart */}
 
-            <h2>Recent Leave Requests</h2>
+                <div className="dashboard-section chart-section">
 
-            {recentLeaves.length === 0 ? (
-                <p>No leave requests</p>
-            ) : (
-                recentLeaves.map((leave) => (
-                    <div key={leave.id}>
+                    <HolidayChart />
 
-                        <h3>{leave.leave_type}</h3>
+                </div>
 
-                        <p>
-                            {new Date(
-                                leave.start_date
-                            ).toLocaleDateString()}
-                            {" - "}
-                            {new Date(
-                                leave.end_date
-                            ).toLocaleDateString()}
+            </div>
+
+
+            {/* ================= UPCOMING + RECENT ================= */}
+
+            <div className="dashboard-bottom">
+
+                {/* Upcoming Leaves */}
+
+                <div className="dashboard-section">
+
+                    <h2>📅 Upcoming Approved Leaves</h2>
+
+                    {upcomingLeaves.length === 0 ? (
+
+                        <p className="empty">
+                            No upcoming leaves
                         </p>
 
-                        <p>
-                            Days: {leave.total_days}
+                    ) : (
+
+                        upcomingLeaves.map((leave) => (
+
+                            <div
+                                className="upcoming-leave"
+                                key={leave.id}
+                            >
+
+                                <div className="leave-icon">
+                                    🏖️
+                                </div>
+
+                                <div className="leave-details">
+
+                                    <h3>
+                                        {leave.leave_type}
+                                    </h3>
+
+                                    <p>
+                                        {new Date(
+                                            leave.start_date
+                                        ).toLocaleDateString()}
+                                        {" - "}
+                                        {new Date(
+                                            leave.end_date
+                                        ).toLocaleDateString()}
+                                    </p>
+
+                                </div>
+
+                                <div className="leave-right">
+
+                                    <span className="status approved">
+                                        Approved
+                                    </span>
+
+                                    <strong>
+                                        {leave.total_days} days
+                                    </strong>
+
+                                </div>
+
+                            </div>
+
+                        ))
+                    )}
+
+                    <button className="view-all">
+                        View all upcoming leaves →
+                    </button>
+
+                </div>
+
+
+                {/* Recent Requests */}
+
+                <div className="dashboard-section">
+
+                    <h2>📄 Recent Leave Requests</h2>
+
+                    {recentLeaves.length === 0 ? (
+
+                        <p className="empty">
+                            No leave requests
                         </p>
 
-                        <p>
-                            Status: {leave.status}
-                        </p>
+                    ) : (
 
-                    </div>
-                ))
-            )}
+                        recentLeaves.slice(0, 5).map((leave) => (
+
+                            <div
+                                className="recent-leave"
+                                key={leave.id}
+                            >
+
+                                <div className="leave-icon">
+                                    🏖️
+                                </div>
+
+                                <div className="leave-details">
+
+                                    <h3>
+                                        {leave.leave_type}
+                                    </h3>
+
+                                    <p>
+                                        {new Date(
+                                            leave.start_date
+                                        ).toLocaleDateString()}
+                                        {" - "}
+                                        {new Date(
+                                            leave.end_date
+                                        ).toLocaleDateString()}
+                                    </p>
+
+                                </div>
+
+                                <div className="recent-days">
+                                    {leave.total_days} days
+                                </div>
+
+                                <span
+                                    className={`status ${leave.status}`}
+                                >
+                                    {leave.status}
+                                </span>
+
+                                <span className="request-date">
+                                    {new Date(
+                                        leave.start_date
+                                    ).toLocaleDateString()}
+                                </span>
+
+                            </div>
+
+                        ))
+                    )}
+
+                    <button className="view-all">
+                        View all requests →
+                    </button>
+
+                </div>
+
+            </div>
 
         </div>
     );

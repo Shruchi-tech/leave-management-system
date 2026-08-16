@@ -1,6 +1,7 @@
 import useAuthStore from "../store/authStore";
+import "../styles/Navbar.css";
 
-const Navbar = () => {
+const Navbar = ({ setSidebarOpen }) => {
 
     const user = useAuthStore(
         (state) => state.user
@@ -13,21 +14,35 @@ const Navbar = () => {
     return (
         <header className="navbar">
 
-            <div className="brand">
-                <div className="brand-logo">📖</div>
-    
-               <div>
-                    <h2>Leave Management System</h2>
-                    <span>Employee Portal</span>
-               </div>
-           </div>
+            <div className="navbar-left">
 
-           <div className="navbar-user">
-               <span>{user?.fullName}</span>
+                <button
+                    className="menu-btn"
+                    onClick={() => setSidebarOpen(true)}
+                >
+                    ☰
+                </button>
 
-               <button onClick={logout}>
+            </div>
+
+            <div className="navbar-user">
+
+                <div className="user-info">
+                    <strong>{user?.fullName}</strong>
+                    <span>{user?.role}</span>
+                </div>
+
+                <div className="user-avatar">
+                    {user?.fullName?.charAt(0).toUpperCase()}
+                </div>
+
+                <button
+                    className="logout-btn"
+                    onClick={logout}
+                >
                     Logout
-               </button>
+                </button>
+
             </div>
 
         </header>

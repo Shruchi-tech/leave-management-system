@@ -1,0 +1,48 @@
+.employee-layout {
+    min-height: 100vh;
+    background: #f8fafc;
+}
+
+.employee-main {
+    margin-left: 280px;
+
+    width: calc(100% - 280px);
+
+    min-height: 100vh;
+
+    display: flex;
+    flex-direction: column;
+
+    box-sizing: border-box;
+}
+
+.employee-content {
+    flex: 1;
+    padding: 30px;
+}
+
+.footer {
+    text-align: center;
+    padding: 20px;
+
+    color: #64748b;
+    font-size: 14px;
+}
+
+
+/* =========================
+   Mobile
+========================= */
+
+@media (max-width: 768px) {
+
+    .employee-main {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .employee-content {
+        padding: 20px;
+    }
+
+}
