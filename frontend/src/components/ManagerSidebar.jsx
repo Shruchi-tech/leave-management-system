@@ -18,6 +18,9 @@ const ManagerSidebar = () => {
                 <Link to="/manager/leaves">
                     Team Leaves
                 </Link>
+                <Link to="/manager/change-password">
+                    Change Password
+                </Link>
 
             </nav>
 

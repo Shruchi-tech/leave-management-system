@@ -85,7 +85,117 @@ const login = async ({ email, password }) => {
         }
     };
 };
+const changePassword = async (
+    userId,
+    { currentPassword, newPassword }
+) => {
+
+    // =========================
+    // Validation
+    // =========================
+
+    if (!currentPassword || !newPassword) {
+        throw {
+            status: 400,
+            message: "Current password and new password are required"
+        };
+    }
+
+    if (newPassword.length < 6) {
+        throw {
+            status: 400,
+            message: "New password must be at least 6 characters long"
+        };
+    }
+
+    if (currentPassword === newPassword) {
+        throw {
+            status: 400,
+            message: "New password must be different from current password"
+        };
+    }
+
+
+    // =========================
+    // Get User
+    // =========================
+
+    const [rows] = await pool.execute(
+        `SELECT id, password, status
+         FROM users
+         WHERE id=?`,
+        [userId]
+    );
+
+    if (rows.length === 0) {
+        throw {
+            status: 404,
+            message: "User not found"
+        };
+    }
+
+    const user = rows[0];
+
+
+    // =========================
+    // Check Account Status
+    // =========================
+
+    if (user.status === "inactive") {
+        throw {
+            status: 403,
+            message: "Account is inactive"
+        };
+    }
+
+
+    // =========================
+    // Verify Current Password
+    // =========================
+
+    const isMatch = await bcrypt.compare(
+        currentPassword,
+        user.password
+    );
+
+    if (!isMatch) {
+        throw {
+            status: 401,
+            message: "Current password is incorrect"
+        };
+    }
+
+
+    // =========================
+    // Hash New Password
+    // =========================
+
+    const hashedPassword = await bcrypt.hash(
+        newPassword,
+        10
+    );
+
+
+    // =========================
+    // Update Password
+    // =========================
+
+    await pool.execute(
+        `UPDATE users
+         SET password=?
+         WHERE id=?`,
+        [
+            hashedPassword,
+            userId
+        ]
+    );
+
+    return {
+        message: "Password changed successfully"
+    };
+};
 
 module.exports = {
-    login
+    login,
+    changePassword
 };

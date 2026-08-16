@@ -1,23 +1,42 @@
 import { create } from "zustand";
-import { loginUser } from "../services/authService";
+
+import {
+    loginUser,
+    changePassword as changePasswordAPI
+} from "../services/authService";
+
 import api from "../api/axios";
 
 const useAuthStore = create((set) => ({
+
     user: null,
+
     token: localStorage.getItem("token"),
+
     isAuthenticated: !!localStorage.getItem("token"),
+
     loading: false,
 
+
+    // =========================
+    // Login
+    // =========================
+
     login: async (credentials) => {
+
         set({ loading: true });
 
         try {
+
             const response = await loginUser(credentials);
 
             const { token, user } = response.data;
 
             localStorage.setItem("token", token);
-            localStorage.setItem("user", JSON.stringify(user));
+            localStorage.setItem(
+                "user",
+                JSON.stringify(user)
+            );
 
             set({
                 token,
@@ -27,15 +46,26 @@ const useAuthStore = create((set) => ({
             });
 
             return response;
+
         } catch (error) {
+
             set({ loading: false });
+
             throw error;
         }
     },
 
+
+    // =========================
+    // Fetch Profile
+    // =========================
+
     fetchProfile: async () => {
+
         try {
-            const response = await api.get("/auth/profile");
+
+            const response =
+                await api.get("/auth/profile");
 
             set({
                 user: response.data.user,
@@ -55,7 +85,43 @@ const useAuthStore = create((set) => ({
         }
     },
 
+
+    // =========================
+    // Change Password
+    // =========================
+
+    changePassword: async (passwordData) => {
+
+        set({ loading: true });
+
+        try {
+
+            const response =
+                await changePasswordAPI(passwordData);
+
+            set({
+                loading: false
+            });
+
+            return response;
+
+        } catch (error) {
+
+            set({
+                loading: false
+            });
+
+            throw error;
+        }
+    },
+
+
+    // =========================
+    // Logout
+    // =========================
+
     logout: () => {
+
         localStorage.removeItem("token");
         localStorage.removeItem("user");
 
@@ -65,6 +131,7 @@ const useAuthStore = create((set) => ({
             isAuthenticated: false,
         });
     },
+
 }));
 
 export default useAuthStore;

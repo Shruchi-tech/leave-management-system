@@ -1,9 +1,14 @@
 const express= require("express");
 const router= express.Router();
-const {login}=require("../controllers/authController");
-router.post("/login",login);
+const {login,changePassword}=require("../controllers/authController");
 const authenticateToken = require("../middleware/authenticateToken");
 const authorizeRoles=require("../middleware/authorizeRoles");
+router.post("/login",login);
+router.put(
+    "/change-password",
+    authenticateToken,
+    changePassword
+);
 router.get("/profile", authenticateToken, (req, res) => {
     res.json({
         success: true,

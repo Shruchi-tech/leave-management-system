@@ -6,6 +6,7 @@ import {
 
 import Login from "../pages/auth/Login";
 import ProtectedRoute from "./ProtectedRoute";
+import ChangePassword from "../pages/employee/ChangePassword";
 // Employee
 import EmployeeLayout from "../layouts/EmployeeLayout";
 import EmployeeDashboard from "../pages/employee/EmployeeDashboard";
@@ -63,6 +64,10 @@ const AppRoutes = () => {
                                 path="/employee/holidays"
                                element={<Holidays />}
                            />
+                           <Route
+                              path="/employee/change-password"
+                              element={<ChangePassword />}
+                           />
                     </Route>
                 </Route>
 
@@ -77,6 +82,11 @@ const AppRoutes = () => {
                            <Route
                               path="/manager/leaves"
                               element={<TeamLeaves />}
+                           />
+                        
+                            <Route
+                                path="/manager/change-password"
+                               element={<ChangePassword />}
                            />
                         </Route>
                 </Route>
@@ -94,20 +104,24 @@ const AppRoutes = () => {
                                element={<AdminEmployees />}
                            />
 
-                       <Route
-                        path="/admin/leaves"
-                           element={<AdminLeaveRequests />}
-                       />
+                           <Route
+                               path="/admin/leaves"
+                               element={<AdminLeaveRequests />}
+                           />
 
-                      <Route
-                           path="/admin/holidays"
-                           element={<AdminHolidays />}
-                       />
+                            <Route
+                               path="/admin/holidays"
+                               element={<AdminHolidays />}
+                           />
 
-                       <Route
-                          path="/admin/leave-types"
-                          element={<AdminLeaveTypes />}
-                       />
+                            <Route
+                               path="/admin/leave-types"
+                               element={<AdminLeaveTypes />}
+                            />
+                            <Route
+                              path="/admin/change-password"
+                              element={<ChangePassword />}
+                            />
                     </Route>
                 </Route>
 

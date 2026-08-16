@@ -37,7 +37,9 @@ const AdminSidebar = () => {
                 <Link to="/admin/leave-types">
                     Leave Types
                 </Link>
-
+                <Link to="/admin/change-password">
+                    Change Password
+                </Link>
             </nav>
 
         </aside>

@@ -26,6 +26,9 @@ const Sidebar = () => {
                 <Link to="/employee/holidays">
                     Holidays
                 </Link>
+                <Link to="/employee/change-password">
+                    Change Password
+                </Link>
 
             </nav>
 
