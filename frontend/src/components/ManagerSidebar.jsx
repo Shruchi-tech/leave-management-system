@@ -1,30 +1,63 @@
 import { Link } from "react-router-dom";
 
-const ManagerSidebar = () => {
+const ManagerSidebar = ({ isOpen, setIsOpen }) => {
 
     return (
-        <aside>
+        <>
+            <aside className={`sidebar ${isOpen ? "sidebar-open" : ""}`}>
 
-            <h2>
-                📖 Leave Management
-            </h2>
+                <div className="sidebar-header">
 
-            <nav>
+                    <h2>
+                        📖 Leave Management
+                    </h2>
 
-                <Link to="/manager">
-                    Dashboard
-                </Link>
+                    <button
+                        className="sidebar-close"
+                        onClick={() => setIsOpen(false)}
+                    >
+                        ✕
+                    </button>
 
-                <Link to="/manager/leaves">
-                    Team Leaves
-                </Link>
-                <Link to="/manager/change-password">
-                    Change Password
-                </Link>
+                </div>
 
-            </nav>
+                <nav className="sidebar-nav">
 
-        </aside>
+                    <Link
+                        className="sidebar-link"
+                        to="/manager"
+                        onClick={() => setIsOpen(false)}
+                    >
+                        Dashboard
+                    </Link>
+
+                    <Link
+                        className="sidebar-link"
+                        to="/manager/leaves"
+                        onClick={() => setIsOpen(false)}
+                    >
+                        Team Leaves
+                    </Link>
+
+                    <Link
+                        className="sidebar-link"
+                        to="/manager/change-password"
+                        onClick={() => setIsOpen(false)}
+                    >
+                        Change Password
+                    </Link>
+
+                </nav>
+
+            </aside>
+
+            {isOpen && (
+                <div
+                    className="sidebar-overlay"
+                    onClick={() => setIsOpen(false)}
+                />
+            )}
+        </>
     );
 };
 

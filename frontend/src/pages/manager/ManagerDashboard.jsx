@@ -3,7 +3,9 @@ import toast from "react-hot-toast";
 import api from "../../api/axios";
 
 import useManagerDashboardStore
-from "../../store/managerDashboardStore";
+    from "../../store/managerDashboardStore";
+
+import "../../styles/ManagerDashboard.css";
 
 const ManagerDashboard = () => {
 
@@ -21,51 +23,81 @@ const ManagerDashboard = () => {
             .catch(() => {});
 
     }, [fetchDashboard]);
-    
+
+
     const handleApprove = async (leaveId) => {
-    try {
-        await api.put(`/leave-requests/${leaveId}/approve`, {
-            manager_comment: ""
-        });
 
-        toast.success("Leave approved successfully");
+        try {
 
-        fetchDashboard();
+            await api.put(
+                `/leave-requests/${leaveId}/approve`,
+                {
+                    manager_comment: ""
+                }
+            );
 
-    } catch (error) {
-        toast.error(
-            error.response?.data?.message ||
-            "Failed to approve leave"
-        );
-    }
-};
+            toast.success(
+                "Leave approved successfully"
+            );
+
+            fetchDashboard();
+
+        } catch (error) {
+
+            toast.error(
+                error.response?.data?.message ||
+                "Failed to approve leave"
+            );
+
+        }
+
+    };
 
 
-const handleReject = async (leaveId) => {
-    try {
-        await api.put(`/leave-requests/${leaveId}/reject`, {
-            manager_comment: ""
-        });
+    const handleReject = async (leaveId) => {
 
-        toast.success("Leave rejected successfully");
+        try {
 
-        fetchDashboard();
+            await api.put(
+                `/leave-requests/${leaveId}/reject`,
+                {
+                    manager_comment: ""
+                }
+            );
 
-    } catch (error) {
-        toast.error(
-            error.response?.data?.message ||
-            "Failed to reject leave"
-        );
-    }
-};
+            toast.success(
+                "Leave rejected successfully"
+            );
+
+            fetchDashboard();
+
+        } catch (error) {
+
+            toast.error(
+                error.response?.data?.message ||
+                "Failed to reject leave"
+            );
+
+        }
+
+    };
+
 
     if (loading) {
-        return <h2>Loading manager dashboard...</h2>;
+        return (
+            <div className="manager-dashboard-loading">
+                Loading manager dashboard...
+            </div>
+        );
     }
 
 
     if (error) {
-        return <h2>{error}</h2>;
+        return (
+            <div className="manager-dashboard-error">
+                {error}
+            </div>
+        );
     }
 
 
@@ -76,228 +108,387 @@ const handleReject = async (leaveId) => {
 
     return (
 
-        <div>
+        <div className="manager-dashboard">
 
-            <h1>Manager Dashboard</h1>
+            {/* Header */}
 
-
-            {/* Employee Statistics */}
-
-            <h2>Team Statistics</h2>
-
-            <div>
+            <div className="manager-dashboard-header">
 
                 <div>
-                    <h3>Total Employees</h3>
-                    <p>
-                        {dashboard.totalEmployees}
-                    </p>
-                </div>
+                    <h1>Manager Dashboard</h1>
 
-                <div>
-                    <h3>Active Employees</h3>
                     <p>
-                        {dashboard.activeEmployees}
-                    </p>
-                </div>
-
-                <div>
-                    <h3>Inactive Employees</h3>
-                    <p>
-                        {dashboard.inactiveEmployees}
+                        Overview of your team and leave requests
                     </p>
                 </div>
 
             </div>
+
+
+            {/* Team Statistics */}
+
+            <section>
+
+                <h2>Team Statistics</h2>
+
+                <div className="stats-grid manager-team-stats">
+
+                    <div className="stat-card">
+                        <span className="stat-icon">
+                            👥
+                        </span>
+
+                        <div>
+                            <p>Total Employees</p>
+                            <h3>
+                                {dashboard.totalEmployees}
+                            </h3>
+                        </div>
+                    </div>
+
+
+                    <div className="stat-card">
+                        <span className="stat-icon">
+                            ✅
+                        </span>
+
+                        <div>
+                            <p>Active Employees</p>
+                            <h3>
+                                {dashboard.activeEmployees}
+                            </h3>
+                        </div>
+                    </div>
+
+
+                    <div className="stat-card">
+                        <span className="stat-icon">
+                            ⛔
+                        </span>
+
+                        <div>
+                            <p>Inactive Employees</p>
+                            <h3>
+                                {dashboard.inactiveEmployees}
+                            </h3>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
 
 
             {/* Leave Statistics */}
 
-            <h2>Leave Statistics</h2>
+            <section>
 
-            <div>
+                <h2>Leave Statistics</h2>
 
-                <div>
-                    <h3>Total Requests</h3>
-                    <p>
-                        {dashboard.totalLeaveRequests}
-                    </p>
+                <div className="stats-grid leave-stats">
+
+                    <div className="stat-card">
+                        <span className="stat-icon">
+                            📋
+                        </span>
+
+                        <div>
+                            <p>Total Requests</p>
+                            <h3>
+                                {dashboard.totalLeaveRequests}
+                            </h3>
+                        </div>
+                    </div>
+
+
+                    <div className="stat-card">
+                        <span className="stat-icon">
+                            ⏳
+                        </span>
+
+                        <div>
+                            <p>Pending</p>
+                            <h3>
+                                {dashboard.pendingLeaveRequests}
+                            </h3>
+                        </div>
+                    </div>
+
+
+                    <div className="stat-card">
+                        <span className="stat-icon">
+                            ✓
+                        </span>
+
+                        <div>
+                            <p>Approved</p>
+                            <h3>
+                                {dashboard.approvedLeaveRequests}
+                            </h3>
+                        </div>
+                    </div>
+
+
+                    <div className="stat-card">
+                        <span className="stat-icon">
+                            ✕
+                        </span>
+
+                        <div>
+                            <p>Rejected</p>
+                            <h3>
+                                {dashboard.rejectedLeaveRequests}
+                            </h3>
+                        </div>
+                    </div>
+
+
+                    <div className="stat-card">
+                        <span className="stat-icon">
+                            ↩
+                        </span>
+
+                        <div>
+                            <p>Cancelled</p>
+                            <h3>
+                                {dashboard.cancelledLeaveRequests}
+                            </h3>
+                        </div>
+                    </div>
+
                 </div>
 
-                <div>
-                    <h3>Pending</h3>
-                    <p>
-                        {dashboard.pendingLeaveRequests}
-                    </p>
-                </div>
-
-                <div>
-                    <h3>Approved</h3>
-                    <p>
-                        {dashboard.approvedLeaveRequests}
-                    </p>
-                </div>
-
-                <div>
-                    <h3>Rejected</h3>
-                    <p>
-                        {dashboard.rejectedLeaveRequests}
-                    </p>
-                </div>
-
-                <div>
-                    <h3>Cancelled</h3>
-                    <p>
-                        {dashboard.cancelledLeaveRequests}
-                    </p>
-                </div>
-
-            </div>
+            </section>
 
 
             {/* Today's Leave */}
 
-            <h2>Today's Team Members on Leave</h2>
+            <section className="dashboard-section">
 
-            {
-                dashboard.todayOnLeave.length === 0 ? (
+                <div className="section-header">
 
-                    <p>
-                        No team members are on leave today.
-                    </p>
+                    <div>
+                        <h2>
+                            Today's Team Members on Leave
+                        </h2>
+
+                        <p>
+                            Employees currently on leave today
+                        </p>
+                    </div>
+
+                </div>
+
+
+                {dashboard.todayOnLeave.length === 0 ? (
+
+                    <div className="empty-state">
+                        <span>📅</span>
+                        <p>
+                            No team members are on leave today.
+                        </p>
+                    </div>
 
                 ) : (
 
-                    <div>
+                    <div className="employee-leave-grid">
 
-                        {dashboard.todayOnLeave.map((employee) => (
+                        {dashboard.todayOnLeave.map(
+                            (employee) => (
 
-                            <div key={employee.employee_id}>
+                                <div
+                                    className="employee-leave-card"
+                                    key={employee.employee_id}
+                                >
 
-                                <h3>
-                                    {employee.full_name}
-                                </h3>
+                                    <div className="employee-avatar">
+                                        {employee.full_name
+                                            ?.charAt(0)
+                                            .toUpperCase()}
+                                    </div>
 
-                                <p>
-                                    Employee Code:{" "}
-                                    {employee.employee_code}
-                                </p>
+                                    <div className="employee-leave-info">
 
-                                <p>
-                                    Department:{" "}
-                                    {employee.department}
-                                </p>
+                                        <h3>
+                                            {employee.full_name}
+                                        </h3>
 
-                                <p>
-                                    Leave Type:{" "}
-                                    {employee.leave_type}
-                                </p>
+                                        <p>
+                                            {employee.employee_code}
+                                        </p>
 
-                                <p>
-                                    {new Date(
-                                        employee.start_date
-                                    ).toLocaleDateString()}
-                                    {" - "}
-                                    {new Date(
-                                        employee.end_date
-                                    ).toLocaleDateString()}
-                                </p>
+                                        <span>
+                                            {employee.department}
+                                        </span>
 
-                            </div>
+                                        <strong>
+                                            {employee.leave_type}
+                                        </strong>
 
-                        ))}
+                                        <small>
+                                            {new Date(
+                                                employee.start_date
+                                            ).toLocaleDateString()}
+                                            {" - "}
+                                            {new Date(
+                                                employee.end_date
+                                            ).toLocaleDateString()}
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                            )
+                        )}
 
                     </div>
 
-                )
-            }
+                )}
+
+            </section>
 
 
             {/* Recent Requests */}
 
-            <h2>Recent Team Leave Requests</h2>
+            <section className="dashboard-section">
 
-            {
-                dashboard.recentLeaves.length === 0 ? (
+                <div className="section-header">
 
-                    <p>
-                        No leave requests found.
-                    </p>
+                    <div>
+                        <h2>
+                            Recent Team Leave Requests
+                        </h2>
+
+                        <p>
+                            Review and manage recent requests
+                        </p>
+                    </div>
+
+                </div>
+
+
+                {dashboard.recentLeaves.length === 0 ? (
+
+                    <div className="empty-state">
+                        <span>📋</span>
+                        <p>
+                            No leave requests found.
+                        </p>
+                    </div>
 
                 ) : (
 
-                    <div>
+                    <div className="recent-leaves-list">
 
-                        {dashboard.recentLeaves.map((leave) => (
+                        {dashboard.recentLeaves.map(
+                            (leave) => (
 
-                            <div key={leave.id}>
+                                <div
+                                    className="leave-request-card"
+                                    key={leave.id}
+                                >
 
-                                <h3>
-                                    {leave.full_name}
-                                </h3>
+                                    <div className="leave-request-main">
 
-                                <p>
-                                    Employee Code:{" "}
-                                    {leave.employee_code}
-                                </p>
+                                        <div className="employee-avatar">
+                                            {leave.full_name
+                                                ?.charAt(0)
+                                                .toUpperCase()}
+                                        </div>
 
-                                <p>
-                                    Leave Type:{" "}
-                                    {leave.leave_type}
-                                </p>
+                                        <div>
 
-                                <p>
-                                    {new Date(
-                                        leave.start_date
-                                    ).toLocaleDateString()}
-                                    {" - "}
-                                    {new Date(
-                                        leave.end_date
-                                    ).toLocaleDateString()}
-                                </p>
+                                            <h3>
+                                                {leave.full_name}
+                                            </h3>
 
-                                <p>
-                                    Days:{" "}
-                                    {leave.total_days}
-                                </p>
+                                            <p>
+                                                {leave.employee_code}
+                                                {" · "}
+                                                {leave.leave_type}
+                                            </p>
 
-                                <p>
-                                    Status:{" "}
-                                    {leave.status}
-                                </p>
+                                            <span>
+                                                {new Date(
+                                                    leave.start_date
+                                                ).toLocaleDateString()}
+                                                {" - "}
+                                                {new Date(
+                                                    leave.end_date
+                                                ).toLocaleDateString()}
+                                            </span>
 
-                                {leave.reason && (
+                                        </div>
 
-                                    <p>
-                                        Reason: {leave.reason}
-                                    </p>
+                                    </div>
 
-                                )}
-                                {leave.status === "pending" && (
-                                    <div>
 
-                                     <button
-                                         onClick={() => handleApprove(leave.id)}
-                                     >
-                                          Approve
-                                     </button>
+                                    <div className="leave-request-details">
 
-                                      <button
-                                        onClick={() => handleReject(leave.id)}
-                                      >
-                                           Reject
-                                      </button>
+                                        <span>
+                                            {leave.total_days} days
+                                        </span>
 
-                                   </div>
-                                )}
-                            </div>
+                                        <span
+                                            className={`status ${leave.status}`}
+                                        >
+                                            {leave.status}
+                                        </span>
 
-                        ))}
+                                    </div>
+
+
+                                    {leave.reason && (
+
+                                        <p className="leave-reason">
+                                            <strong>Reason:</strong>{" "}
+                                            {leave.reason}
+                                        </p>
+
+                                    )}
+
+
+                                    {leave.status === "pending" && (
+
+                                        <div className="leave-actions">
+
+                                            <button
+                                                className="approve-btn"
+                                                onClick={() =>
+                                                    handleApprove(
+                                                        leave.id
+                                                    )
+                                                }
+                                            >
+                                                Approve
+                                            </button>
+
+                                            <button
+                                                className="reject-btn"
+                                                onClick={() =>
+                                                    handleReject(
+                                                        leave.id
+                                                    )
+                                                }
+                                            >
+                                                Reject
+                                            </button>
+
+                                        </div>
+
+                                    )}
+
+                                </div>
+
+                            )
+                        )}
 
                     </div>
 
-                )
-            }
+                )}
+
+            </section>
 
         </div>
 

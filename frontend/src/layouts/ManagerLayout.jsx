@@ -1,25 +1,34 @@
+import { useState } from "react";
 import { Outlet } from "react-router-dom";
 
 import ManagerSidebar from "../components/ManagerSidebar";
 import Navbar from "../components/Navbar";
+import "../styles/ManagerLayout.css";
 
 const ManagerLayout = () => {
 
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
     return (
-        <div>
+        <div className="manager-layout">
 
-            <ManagerSidebar />
+            <ManagerSidebar
+                isOpen={sidebarOpen}
+                setIsOpen={setSidebarOpen}
+            />
 
-            <div>
+            <div className="manager-main">
 
-                <Navbar />
+                <Navbar
+                    setSidebarOpen={setSidebarOpen}
+                />
 
-                <main>
+                <main className="manager-content">
                     <Outlet />
                 </main>
 
                 <footer className="footer">
-                    © 2026 Leave Management System · By Shruchi
+                    © 2026 Leave Management System · By Shruchi ❤️
                 </footer>
 
             </div>

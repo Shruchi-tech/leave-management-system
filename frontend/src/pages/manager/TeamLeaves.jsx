@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import api from "../../api/axios";
 
+import "../../styles/TeamLeaves.css";
+
 const TeamLeaves = () => {
 
     const [leaves, setLeaves] = useState([]);
@@ -13,7 +15,9 @@ const TeamLeaves = () => {
 
             setLoading(true);
 
-            const response = await api.get("/leave-requests/team");
+            const response = await api.get(
+                "/leave-requests/team"
+            );
 
             setLeaves(response.data.data);
 
@@ -33,155 +37,268 @@ const TeamLeaves = () => {
 
 
     useEffect(() => {
-
         fetchTeamLeaves();
-
     }, []);
 
 
+    const handleApprove = async (id) => {
+
+        try {
+
+            await api.put(
+                `/leave-requests/${id}/approve`,
+                {
+                    manager_comment: ""
+                }
+            );
+
+            toast.success("Leave approved");
+
+            fetchTeamLeaves();
+
+        } catch (error) {
+
+            toast.error(
+                error.response?.data?.message ||
+                "Failed to approve leave"
+            );
+
+        }
+    };
+
+
+    const handleReject = async (id) => {
+
+        try {
+
+            await api.put(
+                `/leave-requests/${id}/reject`,
+                {
+                    manager_comment: ""
+                }
+            );
+
+            toast.success("Leave rejected");
+
+            fetchTeamLeaves();
+
+        } catch (error) {
+
+            toast.error(
+                error.response?.data?.message ||
+                "Failed to reject leave"
+            );
+
+        }
+    };
+
+
     if (loading) {
-        return <h2>Loading team leaves...</h2>;
+
+        return (
+            <div className="team-leaves-loading">
+                Loading team leaves...
+            </div>
+        );
+
     }
 
 
     return (
-        <div>
 
-            <h1>Team Leave Requests</h1>
+        <div className="team-leaves">
+
+            {/* Header */}
+
+            <div className="team-leaves-header">
+
+                <div>
+                    <h1>Team Leave Requests</h1>
+
+                    <p>
+                        Review and manage leave requests
+                        from your team members.
+                    </p>
+                </div>
+
+                <div className="request-count">
+                    {leaves.length} Requests
+                </div>
+
+            </div>
+
+
+            {/* Empty */}
 
             {leaves.length === 0 ? (
 
-                <p>
-                    No team leave requests found.
-                </p>
+                <div className="team-leaves-empty">
+
+                    <span>📋</span>
+
+                    <h3>
+                        No team leave requests
+                    </h3>
+
+                    <p>
+                        There are currently no leave
+                        requests from your team.
+                    </p>
+
+                </div>
 
             ) : (
 
-                leaves.map((leave) => (
+                <div className="team-leaves-list">
 
-                    <div key={leave.id}>
+                    {leaves.map((leave) => (
 
-                        <h3>
-                            {leave.full_name}
-                        </h3>
+                        <div
+                            className="team-leave-card"
+                            key={leave.id}
+                        >
 
-                        <p>
-                            Employee Code: {leave.employee_code}
-                        </p>
+                            {/* Employee */}
 
-                        <p>
-                            Department: {leave.department}
-                        </p>
+                            <div className="team-leave-top">
 
-                        <p>
-                            Leave Type: {leave.leave_type}
-                        </p>
+                                <div className="employee-avatar">
+                                    {leave.full_name
+                                        ?.charAt(0)
+                                        .toUpperCase()}
+                                </div>
 
-                        <p>
-                            {new Date(
-                                leave.start_date
-                            ).toLocaleDateString()}
-                            {" - "}
-                            {new Date(
-                                leave.end_date
-                            ).toLocaleDateString()}
-                        </p>
+                                <div className="employee-info">
 
-                        <p>
-                            Days: {leave.total_days}
-                        </p>
+                                    <h3>
+                                        {leave.full_name}
+                                    </h3>
 
-                        <p>
-                            Status: {leave.status}
-                        </p>
+                                    <p>
+                                        {leave.employee_code}
+                                        {" · "}
+                                        {leave.department}
+                                    </p>
 
-                        {leave.reason && (
-                            <p>
-                                Reason: {leave.reason}
-                            </p>
-                        )}
+                                </div>
 
-                        {leave.status === "pending" && (
-                            <div>
-
-                                <button
-                                    onClick={async () => {
-
-                                        try {
-
-                                            await api.put(
-                                                `/leave-requests/${leave.id}/approve`,
-                                                {
-                                                    manager_comment: ""
-                                                }
-                                            );
-
-                                            toast.success(
-                                                "Leave approved"
-                                            );
-
-                                            fetchTeamLeaves();
-
-                                        } catch (error) {
-
-                                            toast.error(
-                                                error.response?.data?.message ||
-                                                "Failed to approve leave"
-                                            );
-
-                                        }
-
-                                    }}
+                                <span
+                                    className={`leave-status ${leave.status}`}
                                 >
-                                    Approve
-                                </button>
-
-
-                                <button
-                                    onClick={async () => {
-
-                                        try {
-
-                                            await api.put(
-                                                `/leave-requests/${leave.id}/reject`,
-                                                {
-                                                    manager_comment: ""
-                                                }
-                                            );
-
-                                            toast.success(
-                                                "Leave rejected"
-                                            );
-
-                                            fetchTeamLeaves();
-
-                                        } catch (error) {
-
-                                            toast.error(
-                                                error.response?.data?.message ||
-                                                "Failed to reject leave"
-                                            );
-
-                                        }
-
-                                    }}
-                                >
-                                    Reject
-                                </button>
+                                    {leave.status}
+                                </span>
 
                             </div>
-                        )}
 
-                        <hr />
 
-                    </div>
+                            {/* Leave Information */}
 
-                ))
+                            <div className="team-leave-info-grid">
+
+                                <div>
+                                    <span>
+                                        Leave Type
+                                    </span>
+
+                                    <strong>
+                                        {leave.leave_type}
+                                    </strong>
+                                </div>
+
+
+                                <div>
+                                    <span>
+                                        Duration
+                                    </span>
+
+                                    <strong>
+                                        {new Date(
+                                            leave.start_date
+                                        ).toLocaleDateString()}
+                                        {" - "}
+                                        {new Date(
+                                            leave.end_date
+                                        ).toLocaleDateString()}
+                                    </strong>
+                                </div>
+
+
+                                <div>
+                                    <span>
+                                        Total Days
+                                    </span>
+
+                                    <strong>
+                                        {leave.total_days} days
+                                    </strong>
+                                </div>
+
+                            </div>
+
+
+                            {/* Reason */}
+
+                            {leave.reason && (
+
+                                <div className="team-leave-reason">
+
+                                    <strong>
+                                        Reason:
+                                    </strong>
+
+                                    <span>
+                                        {leave.reason}
+                                    </span>
+
+                                </div>
+
+                            )}
+
+
+                            {/* Actions */}
+
+                            {leave.status === "pending" && (
+
+                                <div className="team-leave-actions">
+
+                                    <button
+                                        className="team-approve-btn"
+                                        onClick={() =>
+                                            handleApprove(
+                                                leave.id
+                                            )
+                                        }
+                                    >
+                                        ✓ Approve
+                                    </button>
+
+                                    <button
+                                        className="team-reject-btn"
+                                        onClick={() =>
+                                            handleReject(
+                                                leave.id
+                                            )
+                                        }
+                                    >
+                                        ✕ Reject
+                                    </button>
+
+                                </div>
+
+                            )}
+
+                        </div>
+
+                    ))}
+
+                </div>
 
             )}
 
         </div>
+
     );
+
 };
 
 export default TeamLeaves;

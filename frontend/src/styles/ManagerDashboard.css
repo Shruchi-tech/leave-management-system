@@ -1,0 +1,577 @@
+/* =========================================
+   Manager Dashboard
+========================================= */
+
+.manager-dashboard {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+
+/* =========================================
+   Header
+========================================= */
+
+.manager-dashboard-header {
+    margin-bottom: 28px;
+}
+
+.manager-dashboard-header h1 {
+    margin: 0 0 6px;
+    font-size: 28px;
+    font-weight: 700;
+    color: #1f2937;
+}
+
+.manager-dashboard-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+
+/* =========================================
+   Sections
+========================================= */
+
+.manager-dashboard section {
+    margin-bottom: 32px;
+}
+
+.manager-dashboard section > h2 {
+    margin: 0 0 16px;
+    font-size: 19px;
+    font-weight: 650;
+    color: #1f2937;
+}
+
+
+/* =========================================
+   Statistics Grid
+========================================= */
+
+.stats-grid {
+    display: grid;
+    gap: 16px;
+}
+
+.manager-team-stats {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.leave-stats {
+    grid-template-columns: repeat(5, 1fr);
+}
+
+
+/* =========================================
+   Statistics Card
+========================================= */
+
+.stat-card {
+    min-height: 105px;
+    padding: 20px;
+
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 18px rgba(0, 0, 0, 0.07);
+}
+
+
+/* =========================================
+   Stat Icon
+========================================= */
+
+.stat-icon {
+    width: 45px;
+    height: 45px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eff6ff;
+    border-radius: 11px;
+
+    font-size: 20px;
+}
+
+
+/* =========================================
+   Stat Text
+========================================= */
+
+.stat-card p {
+    margin: 0 0 5px;
+
+    color: #6b7280;
+    font-size: 13px;
+}
+
+.stat-card h3 {
+    margin: 0;
+
+    color: #111827;
+    font-size: 25px;
+    font-weight: 700;
+}
+
+
+/* =========================================
+   Dashboard Sections
+========================================= */
+
+.dashboard-section {
+    background: #ffffff;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 14px;
+
+    padding: 22px;
+
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+.section-header h2 {
+    margin: 0 0 5px;
+
+    font-size: 19px;
+    color: #1f2937;
+}
+
+.section-header p {
+    margin: 0;
+
+    color: #6b7280;
+    font-size: 13px;
+}
+
+
+/* =========================================
+   Today's Leave
+========================================= */
+
+.employee-leave-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 16px;
+}
+
+.employee-leave-card {
+    display: flex;
+    gap: 15px;
+
+    padding: 17px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+
+    background: #fafafa;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.employee-leave-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 5px 15px rgba(0, 0, 0, 0.06);
+}
+
+
+/* =========================================
+   Avatar
+========================================= */
+
+.employee-avatar {
+    width: 44px;
+    height: 44px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #dbeafe;
+    color: #2563eb;
+
+    font-size: 17px;
+    font-weight: 700;
+}
+
+
+/* =========================================
+   Employee Leave Info
+========================================= */
+
+.employee-leave-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.employee-leave-info h3 {
+    margin: 0 0 3px;
+
+    color: #1f2937;
+    font-size: 15px;
+}
+
+.employee-leave-info p {
+    margin: 0 0 5px;
+
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.employee-leave-info span {
+    margin-bottom: 7px;
+
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.employee-leave-info strong {
+    margin-bottom: 5px;
+
+    color: #2563eb;
+    font-size: 13px;
+}
+
+.employee-leave-info small {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+
+/* =========================================
+   Recent Leave Requests
+========================================= */
+
+.recent-leaves-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.leave-request-card {
+    padding: 18px;
+
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+
+    background: #fafafa;
+}
+
+
+/* =========================================
+   Request Main
+========================================= */
+
+.leave-request-main {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.leave-request-main h3 {
+    margin: 0 0 4px;
+
+    font-size: 15px;
+    color: #1f2937;
+}
+
+.leave-request-main p {
+    margin: 0 0 4px;
+
+    color: #6b7280;
+    font-size: 12px;
+}
+
+.leave-request-main span {
+    color: #6b7280;
+    font-size: 12px;
+}
+
+
+/* =========================================
+   Request Details
+========================================= */
+
+.leave-request-details {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-top: 14px;
+}
+
+.leave-request-details > span:first-child {
+    color: #4b5563;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+
+/* =========================================
+   Status
+========================================= */
+
+.status {
+    display: inline-flex;
+
+    padding: 5px 10px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    text-transform: capitalize;
+}
+
+.status.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status.approved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status.cancelled {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+
+/* =========================================
+   Reason
+========================================= */
+
+.leave-reason {
+    margin: 14px 0 0;
+
+    padding: 10px 12px;
+
+    background: #ffffff;
+
+    border-radius: 8px;
+
+    color: #6b7280;
+
+    font-size: 13px;
+}
+
+
+/* =========================================
+   Approve / Reject Buttons
+========================================= */
+
+.leave-actions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+
+    margin-top: 18px;
+}
+
+.leave-actions button {
+    padding: 8px 16px;
+
+    border: none;
+    border-radius: 7px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.15s ease;
+}
+
+.leave-actions button:hover {
+    opacity: 0.88;
+}
+
+.leave-actions button:active {
+    transform: scale(0.97);
+}
+
+
+.approve-btn {
+    background: #16a34a;
+    color: #ffffff;
+}
+
+.reject-btn {
+    background: #dc2626;
+    color: #ffffff;
+}
+
+
+/* =========================================
+   Empty State
+========================================= */
+
+.empty-state {
+    padding: 40px 20px;
+
+    text-align: center;
+
+    border: 1px dashed #d1d5db;
+    border-radius: 10px;
+
+    background: #fafafa;
+}
+
+.empty-state span {
+    display: block;
+
+    margin-bottom: 10px;
+
+    font-size: 30px;
+}
+
+.empty-state p {
+    margin: 0;
+
+    color: #6b7280;
+
+    font-size: 14px;
+}
+
+
+/* =========================================
+   Loading / Error
+========================================= */
+
+.manager-dashboard-loading,
+.manager-dashboard-error {
+    padding: 50px;
+
+    text-align: center;
+
+    color: #6b7280;
+}
+
+.manager-dashboard-error {
+    color: #dc2626;
+}
+
+
+/* =========================================
+   Tablet
+========================================= */
+
+@media (max-width: 1000px) {
+
+    .leave-stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .manager-team-stats {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+
+
+/* =========================================
+   Small Tablet
+========================================= */
+
+@media (max-width: 750px) {
+
+    .manager-team-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .leave-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .employee-leave-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* =========================================
+   Mobile
+========================================= */
+
+@media (max-width: 500px) {
+
+    .manager-dashboard-header h1 {
+        font-size: 24px;
+    }
+
+    .leave-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-card {
+        min-height: 90px;
+        padding: 16px;
+    }
+
+    .dashboard-section {
+        padding: 16px;
+    }
+
+    .leave-request-card {
+        padding: 15px;
+    }
+
+    .leave-actions {
+        flex-direction: column;
+    }
+
+    .leave-actions button {
+        width: 100%;
+    }
+
+}
