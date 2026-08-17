@@ -1,8 +1,11 @@
 import { useEffect } from "react";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+
 import useLeaveRequestStore
     from "../../store/leaveRequestStore";
+
+import "../../styles/MyLeaves.css";
 
 const MyLeaves = () => {
 
@@ -13,21 +16,17 @@ const MyLeaves = () => {
         cancelLeave
     } = useLeaveRequestStore();
 
+    const navigate = useNavigate();
 
     useEffect(() => {
-
-        fetchMyLeaves()
-            .catch(() => {});
-
+        fetchMyLeaves().catch(() => {});
     }, [fetchMyLeaves]);
-   const navigate = useNavigate();
 
     const handleCancel = async (id) => {
 
-        const confirmCancel =
-            window.confirm(
-                "Are you sure you want to cancel this leave?"
-            );
+        const confirmCancel = window.confirm(
+            "Are you sure you want to cancel this leave?"
+        );
 
         if (!confirmCancel) {
             return;
@@ -47,88 +46,163 @@ const MyLeaves = () => {
                 error.response?.data?.message ||
                 "Failed to cancel leave"
             );
-
         }
-
     };
 
-
     if (loading && leaves.length === 0) {
-
-        return <h2>Loading leaves...</h2>;
-
+        return (
+            <div className="my-leaves-page">
+                <h2>Loading leaves...</h2>
+            </div>
+        );
     }
 
-
     return (
+        <div className="my-leaves-page">
 
-        <div>
+            <div className="page-header">
 
-            <h1>My Leaves</h1>
+                <div>
+                    <h1>My Leaves</h1>
+                    <p>
+                        View and manage your leave requests
+                    </p>
+                </div>
+
+                <button
+                    className="apply-leave-btn"
+                    onClick={() =>
+                        navigate("/employee/apply-leave")
+                    }
+                >
+                    + Apply Leave
+                </button>
+
+            </div>
 
             {leaves.length === 0 ? (
 
-                <p>
-                    No leave requests found.
-                </p>
+                <div className="empty-leaves">
+
+                    <div className="empty-icon">
+                        📋
+                    </div>
+
+                    <h2>No Leave Requests</h2>
+
+                    <p>
+                        You haven't applied for any leaves yet.
+                    </p>
+
+                    <button
+                        onClick={() =>
+                            navigate("/employee/apply-leave")
+                        }
+                    >
+                        Apply for Leave
+                    </button>
+
+                </div>
 
             ) : (
 
-                <div>
+                <div className="leaves-list">
 
                     {leaves.map((leave) => (
 
-                        <div key={leave.id}>
+                        <div
+                            className="leave-card"
+                            key={leave.id}
+                        >
 
-                            <h3>
-                                {leave.leave_type}
-                            </h3>
+                            <div className="leave-card-top">
 
-                            <p>
-                                {leave.start_date}
-                                {" - "}
-                                {leave.end_date}
-                            </p>
+                                <div>
 
-                            <p>
-                                Days: {leave.total_days}
-                            </p>
+                                    <h3>
+                                        {leave.leave_type}
+                                    </h3>
 
-                            <p>
-                                Status: {leave.status}
-                            </p>
+                                    <span className="leave-code">
+                                        {leave.leave_code}
+                                    </span>
 
-                            {leave.reason && (
+                                </div>
 
-                                <p>
-                                    Reason: {leave.reason}
-                                </p>
+                                <span
+                                    className={`status-badge status-${leave.status}`}
+                                >
+                                    {leave.status}
+                                </span>
 
-                            )}
+                            </div>
 
-                            {(
-                                leave.status === "pending" ||
-                                leave.status === "approved"
-                            ) && (
+
+                            <div className="leave-card-info">
+
+                                <div>
+                                    <span>Date</span>
+
+                                    <strong>
+                                        {new Date(
+                                            leave.start_date
+                                        ).toLocaleDateString()}
+                                        {" - "}
+                                        {new Date(
+                                            leave.end_date
+                                        ).toLocaleDateString()}
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Duration</span>
+
+                                    <strong>
+                                        {leave.total_days} days
+                                    </strong>
+                                </div>
+
+                                <div>
+                                    <span>Reason</span>
+
+                                    <strong>
+                                        {leave.reason || "—"}
+                                    </strong>
+                                </div>
+
+                            </div>
+
+
+                            <div className="leave-card-actions">
 
                                 <button
+                                    className="details-btn"
                                     onClick={() =>
-                                        handleCancel(leave.id)
+                                        navigate(
+                                            `/employee/leaves/${leave.id}`
+                                        )
                                     }
                                 >
-                                    Cancel Leave
+                                    View Details
                                 </button>
 
-                               
-                                
-                            )}
-                             <button
-                                    onClick={() =>
-                                    navigate(`/employee/leaves/${leave.id}`)
-                                   }
-                                >
-                                   View Details
-                             </button>
+                                {(
+                                    leave.status === "pending" ||
+                                    leave.status === "approved"
+                                ) && (
+
+                                    <button
+                                        className="cancel-btn"
+                                        onClick={() =>
+                                            handleCancel(leave.id)
+                                        }
+                                    >
+                                        Cancel Leave
+                                    </button>
+
+                                )}
+
+                            </div>
 
                         </div>
 
@@ -139,9 +213,7 @@ const MyLeaves = () => {
             )}
 
         </div>
-
     );
-
 };
 
 export default MyLeaves;

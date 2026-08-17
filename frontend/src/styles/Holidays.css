@@ -1,0 +1,159 @@
+.holidays-page {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+
+/* Header */
+
+.holidays-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.holidays-header h1 {
+    margin: 0 0 6px;
+    font-size: 28px;
+    color: #1f2937;
+}
+
+.holidays-header p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.holiday-count {
+    background: #eff6ff;
+    color: #2563eb;
+    padding: 9px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* Holiday Grid */
+
+.holidays-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+
+/* Holiday Card */
+
+.holiday-card {
+    display: flex;
+    gap: 16px;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.04);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.holiday-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.07);
+}
+
+
+/* Icon */
+
+.holiday-icon {
+    width: 46px;
+    height: 46px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eff6ff;
+    border-radius: 10px;
+
+    font-size: 22px;
+}
+
+
+/* Content */
+
+.holiday-info h3 {
+    margin: 0 0 6px;
+    font-size: 16px;
+    color: #1f2937;
+}
+
+.holiday-date {
+    margin: 0 0 8px;
+    color: #2563eb;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.holiday-description {
+    margin: 0;
+    color: #6b7280;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+
+/* Empty */
+
+.empty-holidays {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.empty-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+}
+
+.empty-holidays h3 {
+    margin: 0 0 6px;
+    color: #374151;
+}
+
+.empty-holidays p {
+    margin: 0;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+
+/* Loading */
+
+.holiday-loading {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 40px;
+    text-align: center;
+    color: #6b7280;
+}
+
+
+/* Mobile */
+
+@media (max-width: 750px) {
+
+    .holidays-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .holidays-header {
+        align-items: flex-start;
+        gap: 15px;
+        flex-direction: column;
+    }
+
+}

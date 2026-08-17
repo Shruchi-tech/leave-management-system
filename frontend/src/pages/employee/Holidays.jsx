@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 
 import useHolidayStore from "../../store/holidayStore";
-
+import "../../styles/Holidays.css";
 
 const Holidays = () => {
 
@@ -21,47 +21,96 @@ const Holidays = () => {
 
 
     if (loading && holidays.length === 0) {
-
-        return <h2>Loading holidays...</h2>;
-
+        return (
+            <div className="holidays-page">
+                <div className="holiday-loading">
+                    Loading holidays...
+                </div>
+            </div>
+        );
     }
 
 
     return (
 
-        <div>
+        <div className="holidays-page">
 
-            <h1>Holidays</h1>
+            <div className="holidays-header">
+
+                <div>
+                    <h1>Holidays</h1>
+
+                    <p>
+                        View all upcoming holidays and important dates.
+                    </p>
+                </div>
+
+                <div className="holiday-count">
+                    {holidays.length} Holidays
+                </div>
+
+            </div>
+
 
             {holidays.length === 0 ? (
 
-                <p>
-                    No holidays found.
-                </p>
+                <div className="empty-holidays">
+
+                    <div className="empty-icon">
+                        📅
+                    </div>
+
+                    <h3>No holidays found</h3>
+
+                    <p>
+                        There are currently no holidays available.
+                    </p>
+
+                </div>
 
             ) : (
 
-                <div>
+                <div className="holidays-grid">
 
                     {holidays.map((holiday) => (
 
-                        <div key={holiday.id}>
+                        <div
+                            className="holiday-card"
+                            key={holiday.id}
+                        >
 
-                            <h3>
-                                {holiday.title}
-                            </h3>
+                            <div className="holiday-icon">
+                                📅
+                            </div>
 
-                            <p>
-                                Date: {holiday.holiday_date}
-                            </p>
+                            <div className="holiday-info">
 
-                            {holiday.description && (
+                                <h3>
+                                    {holiday.title}
+                                </h3>
 
-                                <p>
-                                    {holiday.description}
+                                <p className="holiday-date">
+                                    {new Date(
+                                        holiday.holiday_date
+                                    ).toLocaleDateString(
+                                        "en-IN",
+                                        {
+                                            day: "2-digit",
+                                            month: "short",
+                                            year: "numeric"
+                                        }
+                                    )}
                                 </p>
 
-                            )}
+                                {holiday.description && (
+
+                                    <p className="holiday-description">
+                                        {holiday.description}
+                                    </p>
+
+                                )}
+
+                            </div>
 
                         </div>
 
@@ -75,6 +124,5 @@ const Holidays = () => {
 
     );
 };
-
 
 export default Holidays;
