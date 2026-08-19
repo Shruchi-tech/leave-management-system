@@ -6,6 +6,7 @@ import useAdminDashboardStore
 
 import api from "../../api/axios";
 
+import "../../styles/AdminDashboard.css";
 
 const AdminDashboard = () => {
 
@@ -36,9 +37,7 @@ const AdminDashboard = () => {
                 }
             );
 
-            toast.success(
-                "Leave approved successfully"
-            );
+            toast.success("Leave approved successfully");
 
             fetchDashboard();
 
@@ -65,9 +64,7 @@ const AdminDashboard = () => {
                 }
             );
 
-            toast.success(
-                "Leave rejected successfully"
-            );
+            toast.success("Leave rejected successfully");
 
             fetchDashboard();
 
@@ -84,12 +81,16 @@ const AdminDashboard = () => {
 
 
     if (loading) {
-        return <h2>Loading admin dashboard...</h2>;
+        return <h2 className="dashboard-loading">
+            Loading admin dashboard...
+        </h2>;
     }
 
 
     if (error) {
-        return <h2>{error}</h2>;
+        return <h2 className="dashboard-error">
+            {error}
+        </h2>;
     }
 
 
@@ -100,337 +101,356 @@ const AdminDashboard = () => {
 
     return (
 
-        <div>
+        <div className="admin-dashboard">
 
-            <h1>Admin Dashboard</h1>
+            <div className="dashboard-heading">
+                <h1>Admin Dashboard</h1>
+                <p>Overview of employees and leave management</p>
+            </div>
 
 
-            {/* ================================= */}
+            {/* ========================= */}
             {/* Employee Statistics */}
-            {/* ================================= */}
+            {/* ========================= */}
 
-            <h2>Employee Statistics</h2>
+            <section>
 
-            <div>
+                <h2>Employee Statistics</h2>
 
-                <div>
-                    <h3>Total Employees</h3>
-                    <p>
-                        {dashboard.totalEmployees}
-                    </p>
-                </div>
+                <div className="stats-grid">
 
+                    <div className="stat-card">
+                        <div className="stat-icon">👥</div>
 
-                <div>
-                    <h3>Active Employees</h3>
-                    <p>
-                        {dashboard.activeEmployees}
-                    </p>
-                </div>
-
-
-                <div>
-                    <h3>Inactive Employees</h3>
-                    <p>
-                        {dashboard.inactiveEmployees}
-                    </p>
-                </div>
-
-            </div>
-
-
-            {/* ================================= */}
-            {/* Leave Statistics */}
-            {/* ================================= */}
-
-            <h2>Leave Statistics</h2>
-
-            <div>
-
-                <div>
-                    <h3>Total Requests</h3>
-                    <p>
-                        {dashboard.totalLeaveRequests}
-                    </p>
-                </div>
-
-
-                <div>
-                    <h3>Pending</h3>
-                    <p>
-                        {dashboard.pendingLeaveRequests}
-                    </p>
-                </div>
-
-
-                <div>
-                    <h3>Approved</h3>
-                    <p>
-                        {dashboard.approvedLeaveRequests}
-                    </p>
-                </div>
-
-
-                <div>
-                    <h3>Rejected</h3>
-                    <p>
-                        {dashboard.rejectedLeaveRequests}
-                    </p>
-                </div>
-
-
-                <div>
-                    <h3>Cancelled</h3>
-                    <p>
-                        {dashboard.cancelledLeaveRequests}
-                    </p>
-                </div>
-
-            </div>
-
-
-            {/* ================================= */}
-            {/* Today's On Leave */}
-            {/* ================================= */}
-
-            <h2>
-                Today's Employees on Leave
-            </h2>
-
-
-            {
-                dashboard.todayOnLeave.length === 0 ? (
-
-                    <p>
-                        No employees are on leave today.
-                    </p>
-
-                ) : (
-
-                    <div>
-
-                        {
-                            dashboard.todayOnLeave.map(
-                                (employee) => (
-
-                                    <div
-                                        key={
-                                            employee.employee_id
-                                        }
-                                    >
-
-                                        <h3>
-                                            {employee.full_name}
-                                        </h3>
-
-
-                                        <p>
-                                            Employee Code:{" "}
-                                            {
-                                                employee.employee_code
-                                            }
-                                        </p>
-
-
-                                        <p>
-                                            Department:{" "}
-                                            {
-                                                employee.department
-                                            }
-                                        </p>
-
-
-                                        <p>
-                                            Leave Type:{" "}
-                                            {
-                                                employee.leave_type
-                                            }
-                                        </p>
-
-
-                                        <p>
-
-                                            {
-                                                new Date(
-                                                    employee.start_date
-                                                ).toLocaleDateString()
-                                            }
-
-                                            {" - "}
-
-                                            {
-                                                new Date(
-                                                    employee.end_date
-                                                ).toLocaleDateString()
-                                            }
-
-                                        </p>
-
-                                    </div>
-
-                                )
-                            )
-                        }
-
+                        <div>
+                            <p>Total Employees</p>
+                            <h3>
+                                {dashboard.totalEmployees}
+                            </h3>
+                        </div>
                     </div>
 
-                )
-            }
+
+                    <div className="stat-card">
+                        <div className="stat-icon">✓</div>
+
+                        <div>
+                            <p>Active Employees</p>
+                            <h3>
+                                {dashboard.activeEmployees}
+                            </h3>
+                        </div>
+                    </div>
 
 
-            {/* ================================= */}
+                    <div className="stat-card">
+                        <div className="stat-icon">⚠</div>
+
+                        <div>
+                            <p>Inactive Employees</p>
+                            <h3>
+                                {dashboard.inactiveEmployees}
+                            </h3>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            {/* ========================= */}
+            {/* Leave Statistics */}
+            {/* ========================= */}
+
+            <section>
+
+                <h2>Leave Statistics</h2>
+
+                <div className="stats-grid leave-stats">
+
+                    <div className="stat-card">
+                        <p>Total Requests</p>
+                        <h3>
+                            {dashboard.totalLeaveRequests}
+                        </h3>
+                    </div>
+
+                    <div className="stat-card">
+                        <p>Pending</p>
+                        <h3>
+                            {dashboard.pendingLeaveRequests}
+                        </h3>
+                    </div>
+
+                    <div className="stat-card">
+                        <p>Approved</p>
+                        <h3>
+                            {dashboard.approvedLeaveRequests}
+                        </h3>
+                    </div>
+
+                    <div className="stat-card">
+                        <p>Rejected</p>
+                        <h3>
+                            {dashboard.rejectedLeaveRequests}
+                        </h3>
+                    </div>
+
+                    <div className="stat-card">
+                        <p>Cancelled</p>
+                        <h3>
+                            {dashboard.cancelledLeaveRequests}
+                        </h3>
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            {/* ========================= */}
+            {/* Today's Leave */}
+            {/* ========================= */}
+
+            <section>
+
+                <h2>Today's Employees on Leave</h2>
+
+                {
+                    dashboard.todayOnLeave.length === 0 ? (
+
+                        <div className="empty-card">
+                            <p>
+                                No employees are on leave today.
+                            </p>
+                        </div>
+
+                    ) : (
+
+                        <div className="employee-card-grid">
+
+                            {
+                                dashboard.todayOnLeave.map(
+                                    (employee) => (
+
+                                        <div
+                                            className="employee-card"
+                                            key={employee.employee_id}
+                                        >
+
+                                            <div className="card-avatar">
+                                                {employee.full_name
+                                                    ?.charAt(0)
+                                                    .toUpperCase()}
+                                            </div>
+
+                                            <h3>
+                                                {employee.full_name}
+                                            </h3>
+
+                                            <p>
+                                                <strong>
+                                                    Employee Code:
+                                                </strong>{" "}
+                                                {employee.employee_code}
+                                            </p>
+
+                                            <p>
+                                                <strong>
+                                                    Department:
+                                                </strong>{" "}
+                                                {employee.department}
+                                            </p>
+
+                                            <p>
+                                                <strong>
+                                                    Leave:
+                                                </strong>{" "}
+                                                {employee.leave_type}
+                                            </p>
+
+                                            <p>
+                                                {new Date(
+                                                    employee.start_date
+                                                ).toLocaleDateString()}
+                                                {" - "}
+                                                {new Date(
+                                                    employee.end_date
+                                                ).toLocaleDateString()}
+                                            </p>
+
+                                        </div>
+
+                                    )
+                                )
+                            }
+
+                        </div>
+
+                    )
+                }
+
+            </section>
+
+
+            {/* ========================= */}
             {/* Recent Leave Requests */}
-            {/* ================================= */}
+            {/* ========================= */}
 
-            <h2>
-                Recent Leave Requests
-            </h2>
+            <section>
 
+                <h2>Recent Leave Requests</h2>
 
-            {
-                dashboard.recentLeaves.length === 0 ? (
+                {
+                    dashboard.recentLeaves.length === 0 ? (
 
-                    <p>
-                        No leave requests found.
-                    </p>
+                        <div className="empty-card">
+                            <p>
+                                No leave requests found.
+                            </p>
+                        </div>
 
-                ) : (
+                    ) : (
 
-                    <div>
+                        <div className="leave-request-grid">
 
-                        {
-                            dashboard.recentLeaves.map(
-                                (leave) => (
+                            {
+                                dashboard.recentLeaves.map(
+                                    (leave) => (
 
-                                    <div
-                                        key={leave.id}
-                                    >
+                                        <div
+                                            className="leave-request-card"
+                                            key={leave.id}
+                                        >
 
-                                        <h3>
-                                            {leave.full_name}
-                                        </h3>
-
-
-                                        <p>
-                                            Employee Code:{" "}
-                                            {
-                                                leave.employee_code
-                                            }
-                                        </p>
-
-
-                                        <p>
-                                            Department:{" "}
-                                            {
-                                                leave.department
-                                            }
-                                        </p>
-
-
-                                        <p>
-                                            Leave Type:{" "}
-                                            {
-                                                leave.leave_type
-                                            }
-                                        </p>
-
-
-                                        <p>
-
-                                            {
-                                                new Date(
-                                                    leave.start_date
-                                                ).toLocaleDateString()
-                                            }
-
-                                            {" - "}
-
-                                            {
-                                                new Date(
-                                                    leave.end_date
-                                                ).toLocaleDateString()
-                                            }
-
-                                        </p>
-
-
-                                        <p>
-                                            Days:{" "}
-                                            {leave.total_days}
-                                        </p>
-
-
-                                        <p>
-                                            Status:{" "}
-                                            {leave.status}
-                                        </p>
-
-
-                                        {
-                                            leave.reason && (
-
-                                                <p>
-                                                    Reason:{" "}
-                                                    {leave.reason}
-                                                </p>
-
-                                            )
-                                        }
-
-
-                                        {/* Approve / Reject */}
-
-                                        {
-                                            leave.status ===
-                                            "pending" && (
+                                            <div className="request-header">
 
                                                 <div>
 
-                                                    <button
-                                                        onClick={() =>
-                                                            handleApprove(
-                                                                leave.id
-                                                            )
-                                                        }
-                                                    >
-                                                        Approve
-                                                    </button>
+                                                    <h3>
+                                                        {leave.full_name}
+                                                    </h3>
 
-
-                                                    <button
-                                                        onClick={() =>
-                                                            handleReject(
-                                                                leave.id
-                                                            )
+                                                    <span>
+                                                        {
+                                                            leave.employee_code
                                                         }
-                                                    >
-                                                        Reject
-                                                    </button>
+                                                    </span>
 
                                                 </div>
 
-                                            )
-                                        }
+                                                <span
+                                                    className={`status ${leave.status}`}
+                                                >
+                                                    {leave.status}
+                                                </span>
+
+                                            </div>
 
 
-                                        <hr />
+                                            <div className="request-details">
 
-                                    </div>
+                                                <p>
+                                                    <strong>
+                                                        Department:
+                                                    </strong>{" "}
+                                                    {leave.department}
+                                                </p>
 
+                                                <p>
+                                                    <strong>
+                                                        Leave Type:
+                                                    </strong>{" "}
+                                                    {leave.leave_type}
+                                                </p>
+
+                                                <p>
+                                                    <strong>
+                                                        Duration:
+                                                    </strong>{" "}
+                                                    {new Date(
+                                                        leave.start_date
+                                                    ).toLocaleDateString()}
+                                                    {" - "}
+                                                    {new Date(
+                                                        leave.end_date
+                                                    ).toLocaleDateString()}
+                                                </p>
+
+                                                <p>
+                                                    <strong>
+                                                        Days:
+                                                    </strong>{" "}
+                                                    {leave.total_days}
+                                                </p>
+
+                                                {
+                                                    leave.reason && (
+
+                                                        <p>
+                                                            <strong>
+                                                                Reason:
+                                                            </strong>{" "}
+                                                            {leave.reason}
+                                                        </p>
+
+                                                    )
+                                                }
+
+                                            </div>
+
+
+                                            {
+                                                leave.status ===
+                                                "pending" && (
+
+                                                    <div className="action-buttons">
+
+                                                        <button
+                                                            className="approve-btn"
+                                                            onClick={() =>
+                                                                handleApprove(
+                                                                    leave.id
+                                                                )
+                                                            }
+                                                        >
+                                                            Approve
+                                                        </button>
+
+                                                        <button
+                                                            className="reject-btn"
+                                                            onClick={() =>
+                                                                handleReject(
+                                                                    leave.id
+                                                                )
+                                                            }
+                                                        >
+                                                            Reject
+                                                        </button>
+
+                                                    </div>
+
+                                                )
+                                            }
+
+                                        </div>
+
+                                    )
                                 )
-                            )
-                        }
+                            }
 
-                    </div>
+                        </div>
 
-                )
-            }
+                    )
+                }
+
+            </section>
 
         </div>
 
     );
 
 };
-
 
 export default AdminDashboard;

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
-import useHolidayStore
-    from "../../store/holidayStore";
+import useHolidayStore from "../../store/holidayStore";
+import "../../styles/AdminHolidays.css";
 
 
 const Holidays = () => {
@@ -25,8 +25,7 @@ const Holidays = () => {
     });
 
 
-    const [editingId, setEditingId] =
-        useState(null);
+    const [editingId, setEditingId] = useState(null);
 
 
     useEffect(() => {
@@ -37,10 +36,6 @@ const Holidays = () => {
     }, [fetchHolidays]);
 
 
-    // =========================
-    // Handle Input
-    // =========================
-
     const handleChange = (e) => {
 
         setForm({
@@ -50,10 +45,6 @@ const Holidays = () => {
 
     };
 
-
-    // =========================
-    // Reset Form
-    // =========================
 
     const resetForm = () => {
 
@@ -67,10 +58,6 @@ const Holidays = () => {
 
     };
 
-
-    // =========================
-    // Submit
-    // =========================
 
     const handleSubmit = async (e) => {
 
@@ -128,10 +115,6 @@ const Holidays = () => {
     };
 
 
-    // =========================
-    // Edit
-    // =========================
-
     const handleEdit = (holiday) => {
 
         setEditingId(holiday.id);
@@ -150,10 +133,6 @@ const Holidays = () => {
 
     };
 
-
-    // =========================
-    // Delete
-    // =========================
 
     const handleDelete = async (id) => {
 
@@ -191,7 +170,7 @@ const Holidays = () => {
     if (loading) {
 
         return (
-            <h2>
+            <h2 className="page-loading">
                 Loading holidays...
             </h2>
         );
@@ -201,98 +180,117 @@ const Holidays = () => {
 
     return (
 
-        <div>
+        <div className="admin-holidays">
 
-            <h1>
-                Holiday Management
-            </h1>
+            <div className="page-header">
+
+                <div>
+                    <h1>Holiday Management</h1>
+
+                    <p>
+                        Manage company holidays and dates
+                    </p>
+                </div>
+
+            </div>
 
 
             {/* ========================= */}
             {/* Add / Edit Form */}
             {/* ========================= */}
 
-            <h2>
-                {editingId
-                    ? "Edit Holiday"
-                    : "Add Holiday"}
-            </h2>
+            <section className="holiday-form-section">
 
-
-            <form
-                onSubmit={handleSubmit}
-            >
-
-                <div>
-
-                    <label>
-                        Holiday Title
-                    </label>
-
-                    <input
-                        type="text"
-                        name="title"
-                        value={form.title}
-                        onChange={handleChange}
-                        placeholder="Enter holiday title"
-                    />
-
-                </div>
-
-
-                <div>
-
-                    <label>
-                        Holiday Date
-                    </label>
-
-                    <input
-                        type="date"
-                        name="holiday_date"
-                        value={form.holiday_date}
-                        onChange={handleChange}
-                    />
-
-                </div>
-
-
-                <div>
-
-                    <label>
-                        Description
-                    </label>
-
-                    <textarea
-                        name="description"
-                        value={form.description}
-                        onChange={handleChange}
-                        placeholder="Enter description"
-                    />
-
-                </div>
-
-
-                <button type="submit">
-
+                <h2>
                     {editingId
-                        ? "Update Holiday"
+                        ? "Edit Holiday"
                         : "Add Holiday"}
+                </h2>
 
-                </button>
+
+                <form
+                    className="holiday-form"
+                    onSubmit={handleSubmit}
+                >
+
+                    <div className="form-group">
+
+                        <label>
+                            Holiday Title
+                        </label>
+
+                        <input
+                            type="text"
+                            name="title"
+                            value={form.title}
+                            onChange={handleChange}
+                            placeholder="Enter holiday title"
+                        />
+
+                    </div>
 
 
-                {editingId && (
+                    <div className="form-group">
 
-                    <button
-                        type="button"
-                        onClick={resetForm}
-                    >
-                        Cancel
-                    </button>
+                        <label>
+                            Holiday Date
+                        </label>
 
-                )}
+                        <input
+                            type="date"
+                            name="holiday_date"
+                            value={form.holiday_date}
+                            onChange={handleChange}
+                        />
 
-            </form>
+                    </div>
+
+
+                    <div className="form-group full-width">
+
+                        <label>
+                            Description
+                        </label>
+
+                        <textarea
+                            name="description"
+                            value={form.description}
+                            onChange={handleChange}
+                            placeholder="Enter description"
+                        />
+
+                    </div>
+
+
+                    <div className="form-actions">
+
+                        <button
+                            type="submit"
+                            className="primary-btn"
+                        >
+                            {editingId
+                                ? "Update Holiday"
+                                : "Add Holiday"}
+                        </button>
+
+
+                        {editingId && (
+
+                            <button
+                                type="button"
+                                className="cancel-btn"
+                                onClick={resetForm}
+                            >
+                                Cancel
+                            </button>
+
+                        )}
+
+                    </div>
+
+                </form>
+
+            </section>
 
 
             {/* ========================= */}
@@ -301,9 +299,9 @@ const Holidays = () => {
 
             {error && (
 
-                <p>
+                <div className="error-message">
                     {error}
-                </p>
+                </div>
 
             )}
 
@@ -312,91 +310,129 @@ const Holidays = () => {
             {/* Holiday List */}
             {/* ========================= */}
 
-            <h2>
-                All Holidays
-            </h2>
+            <section className="holiday-list-section">
+
+                <div className="section-header">
+
+                    <h2>
+                        All Holidays
+                    </h2>
+
+                    <span className="holiday-count">
+                        {holidays.length} Holidays
+                    </span>
+
+                </div>
 
 
-            {holidays.length === 0 ? (
+                {holidays.length === 0 ? (
 
-                <p>
-                    No holidays found.
-                </p>
+                    <div className="empty-state">
 
-            ) : (
+                        <div className="empty-icon">
+                            📅
+                        </div>
 
-                <div>
+                        <h3>
+                            No holidays found
+                        </h3>
 
-                    {holidays.map(
-                        (holiday) => (
+                        <p>
+                            Add a holiday to get started.
+                        </p>
+
+                    </div>
+
+                ) : (
+
+                    <div className="holiday-list">
+
+                        {holidays.map((holiday) => (
 
                             <div
-                                key={
-                                    holiday.id
-                                }
+                                className="holiday-card"
+                                key={holiday.id}
                             >
 
-                                <h3>
-                                    {
-                                        holiday.title
-                                    }
-                                </h3>
+                                <div className="holiday-card-top">
 
+                                    <div className="holiday-icon">
+                                        📅
+                                    </div>
 
-                                <p>
-                                    Date:{" "}
-                                    {
-                                        new Date(
-                                            holiday.holiday_date
-                                        ).toLocaleDateString()
-                                    }
-                                </p>
+                                    <div>
+
+                                        <h3>
+                                            {holiday.title}
+                                        </h3>
+
+                                        <p className="holiday-date">
+
+                                            {new Date(
+                                                holiday.holiday_date
+                                            ).toLocaleDateString(
+                                                "en-IN",
+                                                {
+                                                    day: "2-digit",
+                                                    month: "short",
+                                                    year: "numeric"
+                                                }
+                                            )}
+
+                                        </p>
+
+                                    </div>
+
+                                </div>
 
 
                                 {holiday.description && (
 
-                                    <p>
-                                        Description:{" "}
-                                        {
-                                            holiday.description
-                                        }
+                                    <p className="holiday-description">
+
+                                        {holiday.description}
+
                                     </p>
 
                                 )}
 
 
-                                <button
-                                    onClick={() =>
-                                        handleEdit(
-                                            holiday
-                                        )
-                                    }
-                                >
-                                    Edit
-                                </button>
+                                <div className="holiday-actions">
+
+                                    <button
+                                        className="edit-btn"
+                                        onClick={() =>
+                                            handleEdit(
+                                                holiday
+                                            )
+                                        }
+                                    >
+                                        Edit
+                                    </button>
 
 
-                                <button
-                                    onClick={() =>
-                                        handleDelete(
-                                            holiday.id
-                                        )
-                                    }
-                                >
-                                    Delete
-                                </button>
+                                    <button
+                                        className="delete-btn"
+                                        onClick={() =>
+                                            handleDelete(
+                                                holiday.id
+                                            )
+                                        }
+                                    >
+                                        Delete
+                                    </button>
 
-
-                                <hr />
+                                </div>
 
                             </div>
 
-                        )
-                    )}
+                        ))}
 
-                </div>
+                    </div>
 
-            )}
+                )}
+
+            </section>
 
         </div>
 

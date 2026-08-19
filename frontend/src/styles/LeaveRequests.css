@@ -1,0 +1,486 @@
+.leave-requests-page {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+
+/* =========================
+   Page Header
+========================= */
+
+.page-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 30px;
+}
+
+.page-header h1 {
+    margin: 0 0 6px;
+
+    font-size: 30px;
+    color: #0f172a;
+}
+
+.page-header p {
+    margin: 0;
+
+    color: #64748b;
+    font-size: 15px;
+}
+
+.request-count {
+    background: #eef2ff;
+    color: #4f46e5;
+
+    padding: 10px 16px;
+
+    border-radius: 20px;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+
+/* =========================
+   Loading
+========================= */
+
+.page-loading {
+    background: white;
+
+    padding: 40px;
+
+    border-radius: 14px;
+
+    text-align: center;
+
+    color: #64748b;
+}
+
+
+/* =========================
+   Error
+========================= */
+
+.error-message {
+    background: #fee2e2;
+    color: #991b1b;
+
+    border: 1px solid #fecaca;
+
+    padding: 14px 18px;
+
+    border-radius: 10px;
+
+    margin-bottom: 20px;
+}
+
+
+/* =========================
+   Empty State
+========================= */
+
+.empty-state {
+    background: white;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 16px;
+
+    padding: 60px 20px;
+
+    text-align: center;
+
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.06);
+}
+
+.empty-icon {
+    font-size: 42px;
+
+    margin-bottom: 15px;
+}
+
+.empty-state h2 {
+    margin: 0 0 8px;
+
+    color: #1e293b;
+}
+
+.empty-state p {
+    margin: 0;
+
+    color: #64748b;
+}
+
+
+/* =========================
+   Request List
+========================= */
+
+.leave-request-list {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 22px;
+}
+
+
+/* =========================
+   Leave Card
+========================= */
+
+.leave-request-card {
+    background: white;
+
+    border: 1px solid #e2e8f0;
+
+    border-radius: 16px;
+
+    padding: 25px;
+
+    box-shadow: 0 4px 15px rgba(15, 23, 42, 0.06);
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.leave-request-card:hover {
+    transform: translateY(-2px);
+
+    box-shadow: 0 8px 22px rgba(15, 23, 42, 0.09);
+}
+
+
+/* =========================
+   Card Header
+========================= */
+
+.leave-card-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 20px;
+
+    padding-bottom: 20px;
+
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.employee-info {
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+}
+
+.employee-avatar {
+    width: 52px;
+    height: 52px;
+
+    border-radius: 50%;
+
+    background: #4f46e5;
+
+    color: white;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    font-size: 21px;
+
+    font-weight: 700;
+}
+
+.employee-info h2 {
+    margin: 0 0 4px;
+
+    font-size: 19px;
+
+    color: #0f172a;
+}
+
+.employee-info p {
+    margin: 0;
+
+    color: #64748b;
+
+    font-size: 13px;
+}
+
+
+/* =========================
+   Status
+========================= */
+
+.status-badge {
+    padding: 7px 13px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    text-transform: capitalize;
+}
+
+.status-badge.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.approved {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-badge.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status-badge.cancelled {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+
+/* =========================
+   Information Section
+========================= */
+
+.information-section {
+    padding: 20px 0;
+
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.information-section h3 {
+    margin: 0 0 16px;
+
+    font-size: 15px;
+
+    color: #334155;
+}
+
+.information-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap: 16px;
+}
+
+.info-item {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 5px;
+}
+
+.info-item span {
+    color: #94a3b8;
+
+    font-size: 12px;
+
+    font-weight: 500;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.3px;
+}
+
+.info-item strong {
+    color: #334155;
+
+    font-size: 14px;
+
+    word-break: break-word;
+}
+
+
+/* =========================
+   Reason
+========================= */
+
+.reason-box,
+.comment-box {
+    margin-top: 18px;
+
+    padding: 15px 17px;
+
+    border-radius: 10px;
+
+    background: #f8fafc;
+
+    border-left: 4px solid #6366f1;
+}
+
+.reason-box span,
+.comment-box span {
+    display: block;
+
+    margin-bottom: 6px;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+    color: #64748b;
+
+    text-transform: uppercase;
+}
+
+.reason-box p,
+.comment-box p {
+    margin: 0;
+
+    color: #334155;
+
+    font-size: 14px;
+
+    line-height: 1.5;
+}
+
+.comment-box {
+    border-left-color: #10b981;
+}
+
+
+/* =========================
+   Action Buttons
+========================= */
+
+.leave-actions {
+    display: flex;
+
+    justify-content: center;
+
+    gap: 14px;
+
+    padding-top: 22px;
+}
+
+.leave-actions button {
+    min-width: 130px;
+
+    border: none;
+
+    border-radius: 9px;
+
+    padding: 10px 20px;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.15s ease;
+}
+
+.leave-actions button:hover {
+    transform: translateY(-1px);
+}
+
+.leave-actions button:disabled {
+    opacity: 0.6;
+
+    cursor: not-allowed;
+
+    transform: none;
+}
+
+.approve-button {
+    background: #16a34a;
+
+    color: white;
+}
+
+.approve-button:hover:not(:disabled) {
+    background: #15803d;
+}
+
+.reject-button {
+    background: #dc2626;
+
+    color: white;
+}
+
+.reject-button:hover:not(:disabled) {
+    background: #b91c1c;
+}
+
+
+/* =========================
+   Tablet
+========================= */
+
+@media (max-width: 800px) {
+
+    .page-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+
+        gap: 15px;
+    }
+
+    .information-grid {
+        grid-template-columns: 1fr;
+    }
+
+}
+
+
+/* =========================
+   Mobile
+========================= */
+
+@media (max-width: 600px) {
+
+    .leave-requests-page {
+        width: 100%;
+    }
+
+    .page-header h1 {
+        font-size: 25px;
+    }
+
+    .leave-request-card {
+        padding: 18px;
+    }
+
+    .leave-card-header {
+        align-items: flex-start;
+
+        flex-direction: column;
+    }
+
+    .employee-info h2 {
+        font-size: 17px;
+    }
+
+    .leave-actions {
+        flex-direction: column;
+    }
+
+    .leave-actions button {
+        width: 100%;
+    }
+
+}

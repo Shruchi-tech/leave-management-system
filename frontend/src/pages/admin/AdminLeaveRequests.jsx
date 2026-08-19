@@ -4,6 +4,8 @@ import toast from "react-hot-toast";
 import useLeaveRequestStore
     from "../../store/leaveRequestStore";
 
+import "../../styles/LeaveRequests.css";
+
 
 const LeaveRequests = () => {
 
@@ -17,9 +19,9 @@ const LeaveRequests = () => {
     } = useLeaveRequestStore();
 
 
-    // ======================================================
-    // Fetch All Leave Requests
-    // ======================================================
+    // =========================
+    // Fetch Leave Requests
+    // =========================
 
     useEffect(() => {
 
@@ -29,9 +31,9 @@ const LeaveRequests = () => {
     }, [fetchAllLeaves]);
 
 
-    // ======================================================
-    // Approve Leave
-    // ======================================================
+    // =========================
+    // Approve
+    // =========================
 
     const handleApprove = async (id) => {
 
@@ -55,9 +57,9 @@ const LeaveRequests = () => {
     };
 
 
-    // ======================================================
-    // Reject Leave
-    // ======================================================
+    // =========================
+    // Reject
+    // =========================
 
     const handleReject = async (id) => {
 
@@ -81,16 +83,20 @@ const LeaveRequests = () => {
     };
 
 
-    // ======================================================
+    // =========================
     // Loading
-    // ======================================================
+    // =========================
 
     if (loading && leaves.length === 0) {
 
         return (
-            <h2>
-                Loading leave requests...
-            </h2>
+            <div className="leave-requests-page">
+
+                <div className="page-loading">
+                    Loading leave requests...
+                </div>
+
+            </div>
         );
 
     }
@@ -98,150 +104,300 @@ const LeaveRequests = () => {
 
     return (
 
-        <div>
+        <div className="leave-requests-page">
 
-            <h1>
-                Leave Requests
-            </h1>
+            {/* ========================= */}
+            {/* Header */}
+            {/* ========================= */}
+
+            <div className="page-header">
+
+                <div>
+
+                    <h1>
+                        Leave Requests
+                    </h1>
+
+                    <p>
+                        Manage employee leave requests
+                    </p>
+
+                </div>
+
+                <div className="request-count">
+
+                    {leaves.length} Requests
+
+                </div>
+
+            </div>
 
 
-            {/* ================================================= */}
+            {/* ========================= */}
             {/* Error */}
-            {/* ================================================= */}
+            {/* ========================= */}
 
             {error && (
 
-                <p>
+                <div className="error-message">
                     {error}
-                </p>
+                </div>
 
             )}
 
 
-            {/* ================================================= */}
-            {/* No Leaves */}
-            {/* ================================================= */}
+            {/* ========================= */}
+            {/* No Requests */}
+            {/* ========================= */}
 
             {leaves.length === 0 ? (
 
-                <p>
-                    No leave requests found.
-                </p>
+                <div className="empty-state">
+
+                    <div className="empty-icon">
+                        📋
+                    </div>
+
+                    <h2>
+                        No Leave Requests
+                    </h2>
+
+                    <p>
+                        There are no leave requests to display.
+                    </p>
+
+                </div>
 
             ) : (
 
-                <div>
+                <div className="leave-request-list">
 
                     {leaves.map((leave) => (
 
                         <div
+                            className="leave-request-card"
                             key={leave.id}
                         >
 
-                            {/* ================================= */}
+                            {/* ========================= */}
+                            {/* Card Header */}
+                            {/* ========================= */}
+
+                            <div className="leave-card-header">
+
+                                <div className="employee-info">
+
+                                    <div className="employee-avatar">
+
+                                        {leave.full_name
+                                            ?.charAt(0)
+                                            .toUpperCase()}
+
+                                    </div>
+
+                                    <div>
+
+                                        <h2>
+                                            {leave.full_name}
+                                        </h2>
+
+                                        <p>
+                                            {leave.employee_code}
+                                        </p>
+
+                                    </div>
+
+                                </div>
+
+
+                                <span
+                                    className={`status-badge ${leave.status}`}
+                                >
+                                    {leave.status}
+                                </span>
+
+                            </div>
+
+
+                            {/* ========================= */}
                             {/* Employee Information */}
-                            {/* ================================= */}
+                            {/* ========================= */}
 
-                            <h2>
-                                {leave.full_name}
-                            </h2>
+                            <div className="information-section">
 
-                            <p>
-                                Employee Code:{" "}
-                                {leave.employee_code}
-                            </p>
+                                <h3>
+                                    Employee Information
+                                </h3>
 
-                            <p>
-                                Department:{" "}
-                                {leave.department || "N/A"}
-                            </p>
+                                <div className="information-grid">
 
-                            <p>
-                                Email:{" "}
-                                {leave.email}
-                            </p>
+                                    <div className="info-item">
+
+                                        <span>
+                                            Department
+                                        </span>
+
+                                        <strong>
+                                            {leave.department || "N/A"}
+                                        </strong>
+
+                                    </div>
 
 
-                            {/* ================================= */}
+                                    <div className="info-item">
+
+                                        <span>
+                                            Email
+                                        </span>
+
+                                        <strong>
+                                            {leave.email}
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            {/* ========================= */}
                             {/* Leave Information */}
-                            {/* ================================= */}
+                            {/* ========================= */}
 
-                            <h3>
-                                {leave.leave_type}
-                            </h3>
+                            <div className="information-section">
 
-                            <p>
-                                Leave Code:{" "}
-                                {leave.leave_code}
-                            </p>
+                                <h3>
+                                    Leave Information
+                                </h3>
 
-                            <p>
-                                Start Date:{" "}
-                                {new Date(
-                                    leave.start_date
-                                ).toLocaleDateString()}
-                            </p>
+                                <div className="information-grid">
 
-                            <p>
-                                End Date:{" "}
-                                {new Date(
-                                    leave.end_date
-                                ).toLocaleDateString()}
-                            </p>
+                                    <div className="info-item">
 
-                            <p>
-                                Days:{" "}
-                                {leave.total_days}
-                            </p>
+                                        <span>
+                                            Leave Type
+                                        </span>
+
+                                        <strong>
+                                            {leave.leave_type}
+                                        </strong>
+
+                                    </div>
 
 
-                            {/* ================================= */}
+                                    <div className="info-item">
+
+                                        <span>
+                                            Leave Code
+                                        </span>
+
+                                        <strong>
+                                            {leave.leave_code}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div className="info-item">
+
+                                        <span>
+                                            Start Date
+                                        </span>
+
+                                        <strong>
+                                            {new Date(
+                                                leave.start_date
+                                            ).toLocaleDateString()}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div className="info-item">
+
+                                        <span>
+                                            End Date
+                                        </span>
+
+                                        <strong>
+                                            {new Date(
+                                                leave.end_date
+                                            ).toLocaleDateString()}
+                                        </strong>
+
+                                    </div>
+
+
+                                    <div className="info-item">
+
+                                        <span>
+                                            Total Days
+                                        </span>
+
+                                        <strong>
+                                            {leave.total_days} days
+                                        </strong>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+
+                            {/* ========================= */}
                             {/* Reason */}
-                            {/* ================================= */}
+                            {/* ========================= */}
 
                             {leave.reason && (
 
-                                <p>
-                                    Reason:{" "}
-                                    {leave.reason}
-                                </p>
+                                <div className="reason-box">
+
+                                    <span>
+                                        Reason
+                                    </span>
+
+                                    <p>
+                                        {leave.reason}
+                                    </p>
+
+                                </div>
 
                             )}
 
 
-                            {/* ================================= */}
-                            {/* Status */}
-                            {/* ================================= */}
-
-                            <p>
-                                Status:{" "}
-                                {leave.status}
-                            </p>
-
-
-                            {/* ================================= */}
+                            {/* ========================= */}
                             {/* Manager Comment */}
-                            {/* ================================= */}
+                            {/* ========================= */}
 
                             {leave.manager_comment && (
 
-                                <p>
-                                    Manager Comment:{" "}
-                                    {leave.manager_comment}
-                                </p>
+                                <div className="comment-box">
+
+                                    <span>
+                                        Manager Comment
+                                    </span>
+
+                                    <p>
+                                        {leave.manager_comment}
+                                    </p>
+
+                                </div>
 
                             )}
 
 
-                            {/* ================================= */}
-                            {/* Approve / Reject */}
-                            {/* ================================= */}
+                            {/* ========================= */}
+                            {/* Actions */}
+                            {/* ========================= */}
 
                             {leave.status === "pending" && (
 
-                                <div>
+                                <div className="leave-actions">
 
                                     <button
+                                        className="approve-button"
                                         onClick={() =>
                                             handleApprove(
                                                 leave.id
@@ -249,11 +405,12 @@ const LeaveRequests = () => {
                                         }
                                         disabled={loading}
                                     >
-                                        Approve
+                                        ✓ Approve
                                     </button>
 
 
                                     <button
+                                        className="reject-button"
                                         onClick={() =>
                                             handleReject(
                                                 leave.id
@@ -261,15 +418,12 @@ const LeaveRequests = () => {
                                         }
                                         disabled={loading}
                                     >
-                                        Reject
+                                        ✕ Reject
                                     </button>
 
                                 </div>
 
                             )}
-
-
-                            <hr />
 
                         </div>
 

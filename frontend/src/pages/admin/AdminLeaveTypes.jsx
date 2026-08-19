@@ -3,6 +3,8 @@ import toast from "react-hot-toast";
 
 import useLeaveTypeStore from "../../store/leaveTypeStore";
 
+import "../../styles/AdminLeaveTypes.css";
+
 
 const AdminLeaveTypes = () => {
 
@@ -24,12 +26,11 @@ const AdminLeaveTypes = () => {
         description: ""
     });
 
-
     const [editingId, setEditingId] = useState(null);
 
 
     // =========================
-    // Fetch Leave Types
+    // Fetch
     // =========================
 
     useEffect(() => {
@@ -41,7 +42,7 @@ const AdminLeaveTypes = () => {
 
 
     // =========================
-    // Handle Input
+    // Handle Change
     // =========================
 
     const handleChange = (e) => {
@@ -55,7 +56,7 @@ const AdminLeaveTypes = () => {
 
 
     // =========================
-    // Reset Form
+    // Reset
     // =========================
 
     const resetForm = () => {
@@ -79,7 +80,6 @@ const AdminLeaveTypes = () => {
     const handleSubmit = async (e) => {
 
         e.preventDefault();
-
 
         if (
             !form.name ||
@@ -125,7 +125,6 @@ const AdminLeaveTypes = () => {
 
             }
 
-
             resetForm();
 
         } catch (error) {
@@ -155,6 +154,11 @@ const AdminLeaveTypes = () => {
             description: leaveType.description || ""
         });
 
+        window.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
+
     };
 
 
@@ -168,7 +172,6 @@ const AdminLeaveTypes = () => {
             window.confirm(
                 "Are you sure you want to delete this leave type?"
             );
-
 
         if (!confirmed) {
             return;
@@ -195,12 +198,20 @@ const AdminLeaveTypes = () => {
     };
 
 
+    // =========================
+    // Loading
+    // =========================
+
     if (loading && leaveTypes.length === 0) {
 
         return (
-            <h2>
-                Loading leave types...
-            </h2>
+            <div className="leave-types-page">
+
+                <div className="page-loading">
+                    Loading leave types...
+                </div>
+
+            </div>
         );
 
     }
@@ -208,115 +219,174 @@ const AdminLeaveTypes = () => {
 
     return (
 
-        <div>
+        <div className="leave-types-page">
 
-            <h1>
-                Leave Type Management
-            </h1>
+            {/* ========================= */}
+            {/* Header */}
+            {/* ========================= */}
+
+            <div className="page-header">
+
+                <div>
+
+                    <h1>
+                        Leave Type Management
+                    </h1>
+
+                    <p>
+                        Create and manage employee leave types
+                    </p>
+
+                </div>
+
+                <div className="type-count">
+
+                    {leaveTypes.length} Types
+
+                </div>
+
+            </div>
 
 
             {/* ========================= */}
             {/* Add / Edit Form */}
             {/* ========================= */}
 
-            <h2>
-                {editingId
-                    ? "Edit Leave Type"
-                    : "Add Leave Type"}
-            </h2>
+            <div className="leave-type-form-card">
 
+                <div className="section-header">
 
-            <form onSubmit={handleSubmit}>
+                    <div>
 
-                <div>
+                        <h2>
+                            {editingId
+                                ? "Edit Leave Type"
+                                : "Add Leave Type"}
+                        </h2>
 
-                    <label>
-                        Leave Type Name
-                    </label>
+                        <p>
+                            {editingId
+                                ? "Update the leave type details"
+                                : "Create a new leave type for employees"}
+                        </p>
 
-                    <input
-                        type="text"
-                        name="name"
-                        value={form.name}
-                        onChange={handleChange}
-                        placeholder="Enter leave type name"
-                    />
+                    </div>
 
                 </div>
 
 
-                <div>
+                <form
+                    className="leave-type-form"
+                    onSubmit={handleSubmit}
+                >
 
-                    <label>
-                        Code
-                    </label>
+                    <div className="form-grid">
 
-                    <input
-                        type="text"
-                        name="code"
-                        value={form.code}
-                        onChange={handleChange}
-                        placeholder="Enter leave code"
-                    />
+                        <div className="form-group">
 
-                </div>
+                            <label>
+                                Leave Type Name
+                            </label>
 
+                            <input
+                                type="text"
+                                name="name"
+                                value={form.name}
+                                onChange={handleChange}
+                                placeholder="e.g. Casual Leave"
+                            />
 
-                <div>
-
-                    <label>
-                        Total Days
-                    </label>
-
-                    <input
-                        type="number"
-                        name="total_days"
-                        value={form.total_days}
-                        onChange={handleChange}
-                        min="1"
-                        placeholder="Enter total days"
-                    />
-
-                </div>
+                        </div>
 
 
-                <div>
+                        <div className="form-group">
 
-                    <label>
-                        Description
-                    </label>
+                            <label>
+                                Code
+                            </label>
 
-                    <textarea
-                        name="description"
-                        value={form.description}
-                        onChange={handleChange}
-                        placeholder="Enter description"
-                    />
+                            <input
+                                type="text"
+                                name="code"
+                                value={form.code}
+                                onChange={handleChange}
+                                placeholder="e.g. CL"
+                            />
 
-                </div>
-
-
-                <button type="submit">
-
-                    {editingId
-                        ? "Update Leave Type"
-                        : "Add Leave Type"}
-
-                </button>
+                        </div>
 
 
-                {editingId && (
+                        <div className="form-group">
 
-                    <button
-                        type="button"
-                        onClick={resetForm}
-                    >
-                        Cancel
-                    </button>
+                            <label>
+                                Total Days
+                            </label>
 
-                )}
+                            <input
+                                type="number"
+                                name="total_days"
+                                value={form.total_days}
+                                onChange={handleChange}
+                                min="1"
+                                placeholder="e.g. 15"
+                            />
 
-            </form>
+                        </div>
+
+
+                        <div className="form-group full-width">
+
+                            <label>
+                                Description
+                            </label>
+
+                            <textarea
+                                name="description"
+                                value={form.description}
+                                onChange={handleChange}
+                                placeholder="Enter leave type description"
+                                rows="4"
+                            />
+
+                        </div>
+
+                    </div>
+
+
+                    <div className="form-actions">
+
+                        <button
+                            type="submit"
+                            className="primary-button"
+                            disabled={loading}
+                        >
+
+                            {loading
+                                ? "Saving..."
+                                : editingId
+                                    ? "Update Leave Type"
+                                    : "Add Leave Type"}
+
+                        </button>
+
+
+                        {editingId && (
+
+                            <button
+                                type="button"
+                                className="secondary-button"
+                                onClick={resetForm}
+                            >
+                                Cancel
+                            </button>
+
+                        )}
+
+                    </div>
+
+                </form>
+
+            </div>
 
 
             {/* ========================= */}
@@ -325,97 +395,147 @@ const AdminLeaveTypes = () => {
 
             {error && (
 
-                <p>
+                <div className="error-message">
                     {error}
-                </p>
-
-            )}
-
-
-            {/* ========================= */}
-            {/* Leave Type List */}
-            {/* ========================= */}
-
-            <h2>
-                All Leave Types
-            </h2>
-
-
-            {leaveTypes.length === 0 ? (
-
-                <p>
-                    No leave types found.
-                </p>
-
-            ) : (
-
-                <div>
-
-                    {leaveTypes.map((leaveType) => (
-
-                        <div
-                            key={leaveType.id}
-                        >
-
-                            <h3>
-                                {leaveType.name}
-                            </h3>
-
-
-                            <p>
-                                Code: {leaveType.code}
-                            </p>
-
-
-                            <p>
-                                Total Days: {
-                                    leaveType.total_days
-                                }
-                            </p>
-
-
-                            {leaveType.description && (
-
-                                <p>
-                                    Description: {
-                                        leaveType.description
-                                    }
-                                </p>
-
-                            )}
-
-
-                            <button
-                                onClick={() =>
-                                    handleEdit(
-                                        leaveType
-                                    )
-                                }
-                            >
-                                Edit
-                            </button>
-
-
-                            <button
-                                onClick={() =>
-                                    handleDelete(
-                                        leaveType.id
-                                    )
-                                }
-                            >
-                                Delete
-                            </button>
-
-
-                            <hr />
-
-                        </div>
-
-                    ))}
-
                 </div>
 
             )}
+
+
+            {/* ========================= */}
+            {/* Leave Types */}
+            {/* ========================= */}
+
+            <div className="types-section">
+
+                <div className="section-title">
+
+                    <div>
+
+                        <h2>
+                            All Leave Types
+                        </h2>
+
+                        <p>
+                            Available leave categories
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                {leaveTypes.length === 0 ? (
+
+                    <div className="empty-state">
+
+                        <div className="empty-icon">
+                            📋
+                        </div>
+
+                        <h2>
+                            No Leave Types
+                        </h2>
+
+                        <p>
+                            Create your first leave type using
+                            the form above.
+                        </p>
+
+                    </div>
+
+                ) : (
+
+                    <div className="leave-types-grid">
+
+                        {leaveTypes.map((leaveType) => (
+
+                            <div
+                                className="leave-type-card"
+                                key={leaveType.id}
+                            >
+
+                                <div className="type-card-header">
+
+                                    <div className="type-icon">
+                                        📅
+                                    </div>
+
+                                    <div>
+
+                                        <h3>
+                                            {leaveType.name}
+                                        </h3>
+
+                                        <span className="type-code">
+                                            {leaveType.code}
+                                        </span>
+
+                                    </div>
+
+                                </div>
+
+
+                                <div className="days-display">
+
+                                    <strong>
+                                        {leaveType.total_days}
+                                    </strong>
+
+                                    <span>
+                                        days / year
+                                    </span>
+
+                                </div>
+
+
+                                {leaveType.description && (
+
+                                    <div className="type-description">
+
+                                        {leaveType.description}
+
+                                    </div>
+
+                                )}
+
+
+                                <div className="type-actions">
+
+                                    <button
+                                        className="edit-button"
+                                        onClick={() =>
+                                            handleEdit(
+                                                leaveType
+                                            )
+                                        }
+                                    >
+                                        Edit
+                                    </button>
+
+
+                                    <button
+                                        className="delete-button"
+                                        onClick={() =>
+                                            handleDelete(
+                                                leaveType.id
+                                            )
+                                        }
+                                    >
+                                        Delete
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        ))}
+
+                    </div>
+
+                )}
+
+            </div>
 
         </div>
 
