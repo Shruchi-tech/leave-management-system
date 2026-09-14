@@ -9,14 +9,64 @@ import api from "../api/axios";
 
 const useAuthStore = create((set) => ({
 
-    user: null,
+    user: JSON.parse(localStorage.getItem("user")) || null,
 
     token: localStorage.getItem("token"),
 
     isAuthenticated: !!localStorage.getItem("token"),
 
     loading: false,
+    initializing: true,
+    
+     // initializing
+     initializeAuth: async () => {
+    const token = localStorage.getItem("token");
 
+    if (!token) {
+        set({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            initializing: false
+        });
+        return;
+    }
+
+    const storedUser = localStorage.getItem("user");
+
+    if (storedUser) {
+        set({
+            user: JSON.parse(storedUser),
+            token,
+            isAuthenticated: true
+        });
+    }
+
+    try {
+        const response = await api.get("/auth/profile");
+
+        const user = response.data.user;
+
+        localStorage.setItem("user", JSON.stringify(user));
+
+        set({
+            user,
+            token,
+            isAuthenticated: true,
+            initializing: false
+        });
+    } catch (error) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+
+        set({
+            user: null,
+            token: null,
+            isAuthenticated: false,
+            initializing: false
+        });
+    }
+},
 
     // =========================
     // Login
@@ -67,9 +117,13 @@ const useAuthStore = create((set) => ({
             const response =
                 await api.get("/auth/profile");
 
-            set({
-                user: response.data.user,
-                isAuthenticated: true,
+           const user = response.data.user;
+
+            localStorage.setItem("user", JSON.stringify(user));
+
+          set({
+               user,
+              isAuthenticated: true,
             });
 
         } catch (error) {
