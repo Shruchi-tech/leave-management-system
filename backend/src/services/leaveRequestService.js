@@ -502,11 +502,10 @@ const getAllLeaves = async () => {
 // ======================================================
 
 const getLeaveById = async (
-    id
+    id,user
 ) => {
-
-    const [rows] = await pool.execute(
-        `SELECT
+    let query = `
+        SELECT
             lr.*,
             e.employee_code,
             e.full_name,
@@ -514,16 +513,25 @@ const getLeaveById = async (
             d.name AS department,
             lt.name AS leave_type,
             lt.code AS leave_code
-         FROM leave_requests lr
-         JOIN employees e
+        FROM leave_requests lr
+        JOIN employees e
             ON lr.employee_id = e.id
-         LEFT JOIN departments d
+        LEFT JOIN departments d
             ON e.department_id = d.id
-         JOIN leave_types lt
+        JOIN leave_types lt
             ON lr.leave_type_id = lt.id
-         WHERE lr.id=?`,
-        [id]
-    );
+        WHERE lr.id=?
+    `;
+
+    const params = [id];
+
+    if (user.role === "employee") {
+        query += ` AND lr.employee_id=?`;
+        params.push(user.employeeId);
+    }
+
+    const [rows] = await pool.execute(query, params);
+
 
 
     if (rows.length === 0) {

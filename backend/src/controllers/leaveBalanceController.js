@@ -19,7 +19,15 @@ const getLeaveBalanceByEmployee = async (req, res, next) => {
     try {
 
         const { employeeId } = req.params;
-
+        if (
+            req.user.role === "employee" &&
+            Number(employeeId) !== Number(req.user.employeeId)
+        ) {
+            return res.status(403).json({
+                success: false,
+                message: "You can only access your own leave balance"
+            });
+        }
         const balance = await leaveBalanceService.getLeaveBalanceByEmployee(employeeId);
 
         res.status(200).json({
@@ -30,6 +38,7 @@ const getLeaveBalanceByEmployee = async (req, res, next) => {
     } catch (error) {
         next(error);
     }
+    
 };
 
 // ======================================================

@@ -55,7 +55,8 @@ const getLeaveById = async (req, res, next) => {
     try {
 
         const leave = await leaveRequestService.getLeaveById(
-            req.params.id
+            req.params.id,
+            req.user
         );
 
         res.status(200).json({
