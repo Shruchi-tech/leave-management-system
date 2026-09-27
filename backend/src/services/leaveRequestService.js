@@ -11,36 +11,35 @@ const calculateLeaveDays = async (
     startDate,
     endDate
 ) => {
-
+    
     const [holidays] = await connection.execute(
         `SELECT holiday_date
          FROM holidays
          WHERE holiday_date BETWEEN ? AND ?`,
         [startDate, endDate]
     );
-
+    
     const holidaySet = new Set(
-        holidays.map((holiday) => {
-
-            return new Date(holiday.holiday_date)
-                .toISOString()
-                .split("T")[0];
-
-        })
+        holidays.map((holiday) => new Date(holiday.holiday_date)
+            .toLocaleDateString("en-CA", {
+                timeZone: "Asia/Kolkata"
+            })
+        )    
     );
-
     let totalDays = 0;
 
     const currentDate = new Date(startDate);
     const lastDate = new Date(endDate);
 
     while (currentDate <= lastDate) {
+        const day = currentDate.getDay();
 
+        const isWeekend = day === 0 || day === 6;
         const dateString = currentDate
             .toISOString()
             .split("T")[0];
 
-        if (!holidaySet.has(dateString)) {
+        if (!holidaySet.has(dateString) && !isWeekend) {
             totalDays++;
         }
 
@@ -133,13 +132,12 @@ const applyLeave = async (
         reason
     }
 ) => {
-
+    
     const connection = await pool.getConnection();
 
     try {
 
         await connection.beginTransaction();
-
 
         // ------------------------------------------
         // Required Fields Validation
@@ -200,7 +198,6 @@ const applyLeave = async (
              WHERE id=?`,
             [employeeId]
         );
-
         if (
             employee.length === 0 ||
             employee[0].status !== "active"
@@ -224,7 +221,6 @@ const applyLeave = async (
              WHERE id=?`,
             [leave_type_id]
         );
-
         if (
             leaveType.length === 0 ||
             leaveType[0].status !== "active"
@@ -255,7 +251,6 @@ const applyLeave = async (
                 start_date
             ]
         );
-
         if (overlappingLeave.length > 0) {
 
             throw {
@@ -271,13 +266,11 @@ const applyLeave = async (
         // Calculate Leave Days
         // Excluding Holidays
         // ------------------------------------------
-
         const totalDays = await calculateLeaveDays(
             connection,
             start_date,
             end_date
         );
-
         if (totalDays <= 0) {
 
             throw {
@@ -306,7 +299,6 @@ const applyLeave = async (
                 leave_type_id
             ]
         );
-
         if (balance.length === 0) {
 
             throw {
