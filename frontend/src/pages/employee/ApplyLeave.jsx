@@ -5,7 +5,7 @@ import toast from "react-hot-toast";
 import { getLeaveTypes } from "../../services/leaveTypeService";
 import useLeaveRequestStore
     from "../../store/leaveRequestStore";
-
+import { getDateSuggestions } from "../../services/mlService";
 import "../../styles/ApplyLeave.css";
 
 const ApplyLeave = () => {
@@ -18,7 +18,8 @@ const ApplyLeave = () => {
     } = useLeaveRequestStore();
 
     const [leaveTypes, setLeaveTypes] = useState([]);
-
+    const [suggestions, setSuggestions] = useState([]);
+const [suggestionLoading, setSuggestionLoading] = useState(false);
     const [formData, setFormData] = useState({
         leave_type_id: "",
         start_date: "",
@@ -52,7 +53,55 @@ const ApplyLeave = () => {
         fetchLeaveTypes();
 
     }, []);
+    
+    // fetchSuggestions
+    const fetchSuggestions = async () => {
 
+    if (!formData.leave_type_id) {
+        toast.error("Please select a leave type first");
+        return;
+    }
+
+    const start = new Date(formData.start_date);
+    const end = new Date(formData.end_date);
+
+    if (!formData.start_date || !formData.end_date) {
+        toast.error("Please select start and end dates");
+        return;
+    }
+
+    if (end < start) {
+        toast.error("End date cannot be before start date");
+        return;
+    }
+
+    const days =
+        Math.floor(
+            (end - start) / (1000 * 60 * 60 * 24)
+        ) + 1;
+
+    try {
+
+        setSuggestionLoading(true);
+
+        const response =
+            await getDateSuggestions(days);
+
+        setSuggestions(response.data || []);
+
+    } catch (error) {
+
+        toast.error(
+            error.response?.data?.message ||
+            "Failed to get date suggestions"
+        );
+
+    } finally {
+
+        setSuggestionLoading(false);
+
+    }
+};
 
     // Handle Change
     const handleChange = (e) => {
@@ -193,7 +242,19 @@ const ApplyLeave = () => {
 
                         </div>
 
+                        <div className="suggestion-action">
 
+                             <button
+                                type="button"
+                                onClick={fetchSuggestions}
+                                disabled={suggestionLoading}
+                            >
+                               {suggestionLoading
+                                 ? "Finding better dates..."
+                                  : "✨ Suggest Better Dates"}
+                            </button>
+
+                        </div>
                         <div className="form-group">
 
                             <label htmlFor="end_date">
@@ -212,6 +273,67 @@ const ApplyLeave = () => {
 
                     </div>
 
+                    {suggestions.length > 0 && (
+
+    <div className="smart-suggestions">
+
+        <h3>Smart Date Suggestions</h3>
+
+        <p>
+            These dates have been suggested based on
+            team availability, holidays and historical
+            leave activity.
+        </p>
+
+        {suggestions.map((suggestion, index) => (
+
+            <div
+                className="suggestion-card"
+                key={`${suggestion.start_date}-${suggestion.end_date}`}
+            >
+
+                <div>
+
+                    <strong>
+                        {suggestion.start_date}
+                        {" → "}
+                        {suggestion.end_date}
+                    </strong>
+
+                    <p>
+                        {suggestion.reason}
+                    </p>
+
+                </div>
+
+                <div>
+
+                    <span>
+                        Score: {suggestion.score}/100
+                    </span>
+
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setFormData((prev) => ({
+                                ...prev,
+                                start_date: suggestion.start_date,
+                                end_date: suggestion.end_date
+                            }));
+                        }}
+                    >
+                        Use These Dates
+                    </button>
+
+                </div>
+
+            </div>
+
+        ))}
+
+    </div>
+
+)}
 
                     {/* Reason */}
 
