@@ -135,6 +135,44 @@
     cursor: not-allowed;
 }
 
+.coverage-alert {
+    margin: 16px 0;
+    padding: 16px;
+    border-radius: 8px;
+    border: 1px solid;
+}
+
+.coverage-alert h3 {
+    margin: 0 0 8px;
+    font-size: 16px;
+}
+
+.coverage-alert p {
+    margin: 4px 0;
+}
+
+.coverage-good {
+    background: #ecfdf3;
+    border-color: #86efac;
+    color: #166534;
+}
+
+.coverage-warning {
+    background: #fff7ed;
+    border-color: #fdba74;
+    color: #9a3412;
+}
+
+.coverage-unknown {
+    background: #f3f4f6;
+    border-color: #d1d5db;
+    color: #374151;
+}
+
+.coverage-loading {
+    font-size: 14px;
+    color: #6b7280;
+}
 
 /* Mobile */
 

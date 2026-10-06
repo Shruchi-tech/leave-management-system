@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { getLeaveTypes } from "../../services/leaveTypeService";
 import useLeaveRequestStore
     from "../../store/leaveRequestStore";
+    import { getCoverageWarning } from "../../services/mlService";
 import { getDateSuggestions } from "../../services/mlService";
 import "../../styles/ApplyLeave.css";
 
@@ -18,8 +19,10 @@ const ApplyLeave = () => {
     } = useLeaveRequestStore();
 
     const [leaveTypes, setLeaveTypes] = useState([]);
+    const [coverage, setCoverage] = useState(null);
+    const [coverageLoading, setCoverageLoading] = useState(false);
     const [suggestions, setSuggestions] = useState([]);
-const [suggestionLoading, setSuggestionLoading] = useState(false);
+    const [suggestionLoading, setSuggestionLoading] = useState(false);
     const [formData, setFormData] = useState({
         leave_type_id: "",
         start_date: "",
@@ -101,8 +104,50 @@ const [suggestionLoading, setSuggestionLoading] = useState(false);
         setSuggestionLoading(false);
 
     }
-};
+    };
+    
+useEffect(() => {
+    setCoverage(null);
 
+    if (
+        !formData.start_date ||
+        !formData.end_date ||
+        formData.end_date < formData.start_date
+    ) {
+        return;
+    }
+
+    let cancelled = false;
+
+    const checkCoverage = async () => {
+        try {
+            setCoverageLoading(true);
+
+            const response = await getCoverageWarning(
+                formData.start_date,
+                formData.end_date
+            );
+
+            if (!cancelled) {
+                setCoverage(response.data);
+            }
+        } catch (error) {
+            if (!cancelled) {
+                setCoverage(null);
+            }
+        } finally {
+            if (!cancelled) {
+                setCoverageLoading(false);
+            }
+        }
+    };
+
+    checkCoverage();
+
+    return () => {
+        cancelled = true;
+    };
+     }, [formData.start_date, formData.end_date]);
     // Handle Change
     const handleChange = (e) => {
 
@@ -272,7 +317,40 @@ const [suggestionLoading, setSuggestionLoading] = useState(false);
                         </div>
 
                     </div>
+                      
+{coverageLoading && (
+    <p className="coverage-loading">
+        Checking team coverage...
+    </p>
+)}
 
+{!coverageLoading && coverage && (
+    <div
+        className={`coverage-alert ${
+            coverage.status === "good"
+                ? "coverage-good"
+                : coverage.status === "warning"
+                ? "coverage-warning"
+                : "coverage-unknown"
+        }`}
+    >
+        <h3>
+            {coverage.status === "good"
+                ? "Good Team Coverage"
+                : coverage.status === "warning"
+                ? "Coverage Warning"
+                : "Team Coverage Unknown"}
+        </h3>
+
+        <p>{coverage.message}</p>
+
+        <p>
+            Available teammates:{" "}
+            {coverage.available_teammates}/
+            {coverage.team_size}
+        </p>
+    </div>
+)}
                     {suggestions.length > 0 && (
 
     <div className="smart-suggestions">

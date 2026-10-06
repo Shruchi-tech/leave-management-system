@@ -12,4 +12,12 @@ router.get(
     mlController.getDateSuggestions
 );
 
+
+router.get(
+    "/coverage",
+    authenticateToken,
+    authorizeRoles("employee"),
+    mlController.getCoverageWarning
+);
+
 module.exports = router;

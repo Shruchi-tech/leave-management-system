@@ -321,6 +321,117 @@ for (const suggestion of suggestions) {
     return uniqueSuggestions.slice(0, 3);
 };
 
+
+const getCoverageWarning = async (
+    employeeId,
+    startDate,
+    endDate
+) => {
+    if (
+        !startDate ||
+        !endDate ||
+        startDate > endDate
+    ) {
+        throw {
+            status: 400,
+            message: "Valid start and end dates are required"
+        };
+    }
+
+    const [employees] = await pool.execute(
+        `SELECT id, reporting_manager_id
+         FROM employees
+         WHERE id = ?
+         AND status = 'active'`,
+        [employeeId]
+    );
+
+    if (employees.length === 0) {
+        throw {
+            status: 404,
+            message: "Employee not found"
+        };
+    }
+
+    const managerId =
+        employees[0].reporting_manager_id;
+
+    if (!managerId) {
+        throw {
+            status: 400,
+            message: "Employee is not assigned to a manager"
+        };
+    }
+
+    const [team] = await pool.execute(
+        `SELECT id
+         FROM employees
+         WHERE reporting_manager_id = ?
+         AND status = 'active'
+         AND id <> ?`,
+        [managerId, employeeId]
+    );
+
+    const teamSize = team.length;
+
+    const [overlappingLeaves] = await pool.execute(
+        `SELECT DISTINCT lr.employee_id
+         FROM leave_requests lr
+         JOIN employees e
+            ON e.id = lr.employee_id
+         WHERE e.reporting_manager_id = ?
+         AND e.status = 'active'
+         AND lr.employee_id <> ?
+         AND lr.status IN ('pending', 'approved')
+         AND lr.start_date <= ?
+         AND lr.end_date >= ?`,
+        [
+            managerId,
+            employeeId,
+            endDate,
+            startDate
+        ]
+    );
+
+    const overlappingEmployees =
+        overlappingLeaves.length;
+
+    const coverageRatio =
+        teamSize > 0
+            ? (teamSize - overlappingEmployees) / teamSize
+            : 1;
+
+    let status;
+    let message;
+
+    if (teamSize === 0) {
+        status = "unknown";
+        message =
+            "No other active teammates were found to assess team coverage.";
+    } else if (overlappingEmployees === 0) {
+        status = "good";
+        message =
+            "No teammates are currently scheduled off during this period.";
+    } else {
+        status = "warning";
+        message =
+            `${overlappingEmployees} of ${teamSize} teammates are scheduled off during this period.`;
+    }
+
+    return {
+        team_size: teamSize,
+        overlapping_employees: overlappingEmployees,
+        available_teammates:
+            teamSize - overlappingEmployees,
+        coverage_ratio: Number(
+            coverageRatio.toFixed(2)
+        ),
+        status,
+        message
+    };
+};
+
 module.exports = {
-    getDateSuggestions
+    getDateSuggestions,
+    getCoverageWarning
 };
